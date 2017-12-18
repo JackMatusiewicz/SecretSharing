@@ -22,17 +22,17 @@ type ShareGenerator =
 
 module SecretDistribution =
 
-    type Secret = {
+    type private Secret = {
         Value : int
         Threshold : uint32
     }
 
-    type PolynomialTerm = {
+    type private PolynomialTerm = {
         Power : int
         Coefficient : int
     }
 
-    type SecretGraph = { //TODO - make private
+    type private SecretGraph = {
         PolynomialTerms : PolynomialTerm list
     }
 
@@ -55,12 +55,11 @@ module SecretDistribution =
         |> List.fold (+) 0.0
         |> (fun share -> (shareNumber, share))
 
-    //This is the Share Computation side of SSS, once this is done, the graph can be destroyed.
     let private createDesiredShares (numberOfShares : int) (graph : SecretGraph) =
         let r = System.Random() //TODO - replace with real source of randomness.
         let rec create (remaining : int) (acc : Share list) =
             match remaining with
-            | _ when remaining <= 0 -> 
+            | _ when remaining <= 0 ->
                 acc
             | _ ->
                 let nextShare = r.Next(5000) //TODO - replace with BigNum so we can have arbitrarily large numbers
@@ -94,9 +93,9 @@ module SecretReconstruction =
             failwithf "Need more than %d shares to compute secret" threshold
         else
             constructPolynomial shares 0
-            
-            
-let test () =  
+
+
+let test () =
     let mySecret = 11234
     let generator = SecretDistribution.make()
     let shares = generator.GenerateSecret (3u, 6u, mySecret)
