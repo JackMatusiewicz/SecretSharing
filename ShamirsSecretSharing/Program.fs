@@ -68,7 +68,7 @@ module SecretSharing =
                     createSecretGraph thresh secret
                     |> createDesiredShares (int shares) }
 
-    let private interpolate (vals : Share list) ((thisX,_) : Share) : int -> float =
+    let private computeBasisPolynomial (vals : Share list) ((thisX,_) : Share) : int -> float =
         vals
         |> List.filter (fun (x,_) -> x <> thisX)
         |> List.map (fun (x,_) -> fun z -> (float (z - x)) / (float (thisX - x)))
@@ -76,7 +76,7 @@ module SecretSharing =
 
     let private constructPolynomial (vals : Share list) : int -> float =
         vals
-        |> List.map (interpolate vals)
+        |> List.map (computeBasisPolynomial vals)
         |> List.zip vals
         |> List.map (fun ((_,y), f) -> fun x -> y * (f x))
         |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> 0.0)
