@@ -20,12 +20,7 @@ type Share = int * float
 type ShareGenerator =
     abstract member GenerateSecret : uint32*uint32*int -> Share list
 
-module SecretDistribution =
-
-    type private Secret = {
-        Value : int
-        Threshold : uint32
-    }
+module SecretSharing =
 
     type private PolynomialTerm = {
         Power : int
@@ -67,13 +62,11 @@ module SecretDistribution =
                 create (remaining - 1) (next :: acc)
         create numberOfShares []
 
-    let make () =
+    let makeGenerator () =
         { new ShareGenerator with
                 member __.GenerateSecret (thresh, shares, secret) =
                     createSecretGraph thresh secret
                     |> createDesiredShares (int shares) }
-
-module SecretReconstruction =
 
     let private interpolate (vals : Share list) ((thisX,_) : Share) : int -> float =
         vals
@@ -97,9 +90,9 @@ module SecretReconstruction =
 
 let test () =
     let mySecret = 11234
-    let generator = SecretDistribution.make()
+    let generator = SecretSharing.makeGenerator()
     let shares = generator.GenerateSecret (3u, 6u, mySecret)
-    let secret = SecretReconstruction.getSecret 3u shares
+    let secret = SecretSharing.getSecret 3u shares
     printfn "%f" secret
 
 [<EntryPoint>]
