@@ -70,8 +70,9 @@ module SecretSharing =
 
     let private computeBasisPolynomial (vals : Share list) ((thisX,_) : Share) : int -> float =
         vals
-        |> List.filter (fun (x,_) -> x <> thisX)
-        |> List.map (fun (x,_) -> fun z -> (float (z - x)) / (float (thisX - x)))
+        |> List.map fst
+        |> List.filter (fun x -> x <> thisX)
+        |> List.map (fun x -> fun z -> (float (z - x)) / (float (thisX - x)))
         |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> 1.0)
 
     let private constructPolynomial (vals : Share list) : int -> float =
