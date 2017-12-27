@@ -3,6 +3,7 @@
 open NUnit.Framework
 open SecretSharing
 
+[<TestFixture>]
 module RoundTripTests =
 
     let ``Given a secret and a required number of shares, when those shares are present then secret is returned`` () =
