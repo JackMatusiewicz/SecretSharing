@@ -63,7 +63,7 @@ module SecretSharing =
     let private computeBasisPolynomial (vals : Share list) ((thisX,_) : Share) : int -> BigRational =
         vals
         |> List.map fst
-        |> List.filter (fun x -> x <> thisX)
+        |> List.filter ((<>) thisX)
         |> List.map (fun x -> fun z -> BigRational.FromIntFraction (z - x, thisX - x))
         |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> BigRational.One)
 
