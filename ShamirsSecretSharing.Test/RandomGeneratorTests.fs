@@ -20,6 +20,18 @@ module RandomGeneratorTests =
                             store.Add(v) |> ignore; store) store values |> ignore
 
     [<Test>]
+    let ``Given a random bigint generator, when asked to generate 100 numbers then all are unique`` () =
+        let generator = RandomGeneration.makeRandomBigintGenerator (8)
+        let values = Array.init 100 (fun _ -> RandomGeneration.generate generator)
+        let store = HashSet<bigint>()
+        Array.fold (fun (store : HashSet<bigint>) v ->
+                        if store.Contains(v) then
+                            Assert.Fail ()
+                            store
+                        else
+                            store.Add(v) |> ignore; store) store values |> ignore
+
+    [<Test>]
     let ``Given an int generator, when ints are generated then all are greater than or equal to 0`` () =
         let generator = RandomGeneration.makeRandomIntGenerator ()
         Array.init 100 (fun _ -> RandomGeneration.generate generator)
