@@ -6,6 +6,7 @@ open SecretSharing
 [<TestFixture>]
 module RoundTripTests =
 
+    [<Test>]
     let ``Given a secret and a required number of shares, when those shares are present then secret is returned`` () =
             let mySecret = 11234
             let generator = SecretSharing.makeGenerator()
@@ -13,6 +14,7 @@ module RoundTripTests =
             let secret = SecretSharing.getSecret 3u shares
             Assert.That (secret, Is.EqualTo(mySecret))
 
+    [<Test>]
     let ``Given a secret and a required number of shares, when not enough shares are present then secret is not returned`` () =
             let mySecret = 11234
             let generator = SecretSharing.makeGenerator()
