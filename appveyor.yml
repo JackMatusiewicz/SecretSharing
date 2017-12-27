@@ -6,7 +6,7 @@ environment:
 before_build:
 - nuget restore
 build:
-  project: MyPass.sln
+  project: ShamirsSecretSharing.sln
   verbosity: minimal
 after_test:
   - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[*]* -[ShamirsSecretSharing.Tests]*" -target:"packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" -targetargs:"/domain:single ShamirsSecretSharing.Tests/bin/debug/ShamirsSecretSharing.Tests.dll" -output:coverage.xml
