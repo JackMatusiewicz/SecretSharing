@@ -21,7 +21,7 @@ module RandomGeneration =
                     r.GetBytes(store)
                     let value = BitConverter.ToInt32(store,0)
                     value &&& (0x7FFFFFFF)
-        Generator (f, r :> IDisposable)
+        Generator (f,r)
 
     ///Generates a random positive big integer, of the required size.
     let makeRandomBigintGenerator (bytesInBigint : int) =
