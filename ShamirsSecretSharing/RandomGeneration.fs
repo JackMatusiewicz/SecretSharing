@@ -28,6 +28,7 @@ module RandomGeneration =
         let r = new RNGCryptoServiceProvider()
         let f = fun () ->
                     let store = Array.create bytesInBigint (byte 0)
+                    r.GetBytes(store)
                     store.[bytesInBigint - 1] <- (store.[bytesInBigint - 1] &&& (byte 0x7F))
                     BigInteger(store)
         Generator (f,r)

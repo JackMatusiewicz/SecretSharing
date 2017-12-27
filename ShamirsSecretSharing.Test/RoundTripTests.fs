@@ -25,6 +25,6 @@ module RoundTripTests =
     let ``Given a secret and a required number of shares, when not enough shares are present then secret is not returned`` () =
             let mySecret = bigint 10848292
             let generator = SecretSharing.makeGenerator()
-            let shares = generator.GenerateSecret (5u, 6u, mySecret) |> List.take 2
-            let secret = SecretSharing.getSecret 2u shares
+            let shares = generator.GenerateSecret (5u, 6u, mySecret) |> List.take 1
+            let secret = SecretSharing.getSecret 1u shares
             Assert.That (secret, Is.Not.EqualTo(mySecret))
