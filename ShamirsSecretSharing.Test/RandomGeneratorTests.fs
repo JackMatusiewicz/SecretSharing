@@ -8,16 +8,16 @@ open System.Collections.Generic
 module RandomGeneratorTests =
 
     [<Test>]
-        let ``Given a random int generator, when asked to generate 100 numbers then all are unique`` () =
-            let generator = RandomGeneration.makeRandomIntGenerator ()
-            let values = Array.init 100 (fun _ -> RandomGeneration.generate generator)
-            let store = HashSet<int>()
-            Array.fold (fun (store : HashSet<int>) v ->
-                            if store.Contains(v) then
-                                Assert.Fail ()
-                                store
-                            else
-                                store.Add(v) |> ignore; store) store values |> ignore
+    let ``Given a random int generator, when asked to generate 100 numbers then all are unique`` () =
+        let generator = RandomGeneration.makeRandomIntGenerator ()
+        let values = Array.init 100 (fun _ -> RandomGeneration.generate generator)
+        let store = HashSet<int>()
+        Array.fold (fun (store : HashSet<int>) v ->
+                        if store.Contains(v) then
+                            Assert.Fail ()
+                            store
+                        else
+                            store.Add(v) |> ignore; store) store values |> ignore
 
     [<Test>]
     let ``Given a random bigint generator, when asked to generate 100 numbers then all are unique`` () =
