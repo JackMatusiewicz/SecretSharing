@@ -16,13 +16,10 @@ module RoundTripTests =
     
     [<Test>]
     let ``Given a secret and a required number of shares, when not enough shares are present then error is thrown`` () =
-        try
             let mySecret = 11234
             let generator = SecretSharing.makeGenerator()
             let shares = generator.GenerateSecret (3u, 6u, mySecret) |> List.take 2
-            SecretSharing.getSecret 3u shares |> ignore
-        with
-        | exn -> Assert.Pass()
+            Assert.Throws<System.Exception>(fun () -> SecretSharing.getSecret 3u shares |> ignore) |> ignore
 
     [<Test>]
     let ``Given a secret and a required number of shares, when not enough shares are present then secret is not returned`` () =
