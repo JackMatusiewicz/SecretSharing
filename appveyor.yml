@@ -1,0 +1,13 @@
+image: Visual Studio 2015
+
+environment:
+  COVERALLS_REPO_TOKEN:
+    secure: Fic+w+TySzx5QTzv2uD3/9n0wabGCk5gww1T+jM43ivcsBLtNsxKvi5ebNlXlwZf
+before_build:
+- nuget restore
+build:
+  project: MyPass.sln
+  verbosity: minimal
+after_test:
+  - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[*]* -[ShamirsSecretSharing.Tests]*" -target:"packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" -targetargs:"/domain:single ShamirsSecretSharing.Tests/bin/debug/ShamirsSecretSharing.Tests.dll" -output:coverage.xml
+  - packages\coveralls.io.1.4.2\tools\coveralls.net.exe --opencover coverage.xml
