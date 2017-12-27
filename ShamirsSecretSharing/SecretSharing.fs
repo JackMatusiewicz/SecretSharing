@@ -76,4 +76,4 @@ module SecretSharing =
         if (shares |> List.length |> uint32) < threshold then
             failwithf "Need more than %d shares to compute secret" threshold
         else
-            constructPolynomial shares 0 |> int
+            constructPolynomial shares 0 |> Math.Round |> int
