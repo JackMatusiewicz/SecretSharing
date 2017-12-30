@@ -27,7 +27,8 @@ module MathTests =
     [<Repeat(50)>]
     let ``Given two numbers, m and n, the gcd multiplied by lcm equals m * n``() =
         let makeTuple a b = a,b
-        let a,b = (RandomGeneration.generate numGenerator),(RandomGeneration.generate numGenerator)
+        let a = (RandomGeneration.generate numGenerator)
+        let b = (RandomGeneration.generate numGenerator)
 
         Assert.That((gcd a b) * (lcm a b), Is.EqualTo(a * b))
 
