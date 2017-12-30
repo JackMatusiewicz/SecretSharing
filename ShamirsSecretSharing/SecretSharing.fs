@@ -6,6 +6,7 @@ open MathNet.Numerics
 open System.Numerics
 
 type Share = int * bigint
+type BigRati = bigint * bigint //TODO - move pls
 
 //TODO - in order to actually be useful, this must use finite field arithmetic!
 
@@ -61,16 +62,20 @@ module SecretSharing =
                     createSecretGraph thresh (RandomGeneration.makeRandomBigintGenerator 4) secret
                     |> createDesiredShares (int shares) }
 
-    let private computeBasisPolynomial (vals : Share list) ((thisX,_) : Share) : int -> BigRational =
+    let private biMult (a : BigRati) (b : BigRati) : BigRati = //TODO - move pls
+        let (n1,d1) = a
+        let (n2,d2) = b
+        ((n1 * n2),(d1 * d2))
+
+    let private computeBasisPolynomial (vals : Share list) ((thisX,_) : Share) : int -> BigRati =
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun x -> fun z -> BigRational.FromIntFraction ((z - x), (thisX - x)))
-        |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> BigRational.One)
+        |> List.map (fun x -> fun z -> ((bigint (z - x)), (bigint (thisX - x))))
+        |> List.fold (fun f g -> biMult <!> f <*> g) (fun _ -> ((bigint 1), (bigint 1)))
 
-    let private toBigInt (modulus : bigint) (br : BigRational) = //TODO - move to FFA
-        let num = br.Numerator
-        let den = br.Denominator
+    let private toBigInt (modulus : bigint) (br : BigRati) = //TODO - move to FFA
+        let (num,den) = br
         let modInvDen = Math.modularInverse den modulus
         match modInvDen with
         | None -> failwith "TBC" //TODO - fill this in!
@@ -80,10 +85,13 @@ module SecretSharing =
         (a + b) % modulus
 
     let private constructPolynomial (vals : Share list) : int -> bigint =
+        let mul (a : bigint) ((n,d) : BigRati) : BigRati =
+            (n*a),d
+
         vals
         |> List.map (computeBasisPolynomial vals)
         |> List.zip vals
-        |> List.map (fun ((_,y), f) -> fun x -> BigRational.FromBigInt(y) * (f x))
+        |> List.map (fun ((_,y), f) -> fun x -> mul y (f x))
         |> List.map (fun f -> toBigInt (bigint 65537) <!> f)
         |> List.fold (fun f g -> (addBis (bigint 65537)) <!> f <*> g) (fun _ -> (bigint 0))
 
