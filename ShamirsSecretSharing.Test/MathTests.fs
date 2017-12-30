@@ -5,6 +5,7 @@ open SecretSharing
 open System.Numerics
 open Math
 
+[<TestFixture>]
 module MathTests =
 
     let gcd (a : bigint) (b : bigint) =
@@ -12,6 +13,10 @@ module MathTests =
 
     let numGenerator = RandomGeneration.makeRandomBigintGenerator 3
     let prime = (bigint 65537)
+
+    [<Test>]
+    let ``The LCM of two zeroes is zero`` () =
+        Assert.That(Math.lcm (bigint 0) (bigint 0), Is.EqualTo(bigint 0))
 
     [<Test>]
     let ``Given random modulus and number, when calculating modular inverse then result is correct``() =
