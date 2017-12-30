@@ -40,7 +40,8 @@ module SecretSharing =
         let xValue = (bigint shareNumber)
         graph.PolynomialTerms
         |> List.map (fun term -> BigInteger.Pow(xValue, term.Power) * term.Coefficient)
-        |> List.fold (fun bi s -> (bi + s) % (bigint 65537)) (bigint 0)
+        |> List.fold (+) (bigint 0)
+        |> (fun bi -> bi % (bigint 65537))
         |> (fun share -> (shareNumber, share))
 
     let private createDesiredShares (numberOfShares : int) (graph : SecretGraph) =
@@ -64,17 +65,27 @@ module SecretSharing =
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun x -> fun z -> BigRational.FromIntFraction (z - x, thisX - x))
+        |> List.map (fun x -> fun z -> BigRational.FromIntFraction ((z - x) % 65537, (thisX - x) % 65537))
         |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> BigRational.One)
+
+    let private toBigInt (modulus : bigint) (br : BigRational) = //TODO - move to FFA
+        let num = br.Numerator
+        let den = br.Denominator
+        let modInvDen = Math.modularInverse den modulus
+        match modInvDen with
+        | None -> failwith "TBC" //TODO - fill this in!
+        | Some mid -> (num % modulus) * mid
+ 
+    let addBis (modulus : bigint) (a : bigint) (b : bigint) =
+        (a + b) % modulus
 
     let private constructPolynomial (vals : Share list) : int -> bigint =
         vals
         |> List.map (computeBasisPolynomial vals)
         |> List.zip vals
         |> List.map (fun ((_,y), f) -> fun x -> BigRational.FromBigInt(y) * (f x))
-        |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> BigRational.Zero)
-        |> (fun f -> BigRational.ToBigInt <!> f)
-        |> (fun f -> fun x -> (f x) % (bigint 65537))
+        |> List.map (fun f -> toBigInt (bigint 65537) <!> f)
+        |> List.fold (fun f g -> (addBis (bigint 65537)) <!> f <*> g) (fun _ -> (bigint 0))
 
     let getSecret (threshold : uint32) (shares : Share list) : bigint =
         if (shares |> List.length |> uint32) < threshold then
