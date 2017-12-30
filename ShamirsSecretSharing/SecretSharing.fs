@@ -65,7 +65,7 @@ module SecretSharing =
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun x -> fun z -> BigRational.FromIntFraction ((z - x) % 65537, (thisX - x) % 65537))
+        |> List.map (fun x -> fun z -> BigRational.FromIntFraction ((z - x), (thisX - x)))
         |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> BigRational.One)
 
     let private toBigInt (modulus : bigint) (br : BigRational) = //TODO - move to FFA
