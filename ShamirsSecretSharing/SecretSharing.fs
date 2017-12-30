@@ -68,16 +68,17 @@ module SecretSharing =
         |> List.map (fun x -> fun z -> BigRational.FromIntFraction (z - x, thisX - x))
         |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> BigRational.One)
 
-    let private constructPolynomial (vals : Share list) : int -> BigRational =
+    let private constructPolynomial (vals : Share list) : int -> bigint =
         vals
         |> List.map (computeBasisPolynomial vals)
         |> List.zip vals
         |> List.map (fun ((_,y), f) -> fun x -> BigRational.FromBigInt(y) * (f x))
         |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> BigRational.Zero)
+        |> (fun f -> BigRational.ToBigInt <!> f)
+        |> (fun f -> fun x -> (f x) % (bigint 65537))
 
     let getSecret (threshold : uint32) (shares : Share list) : bigint =
         if (shares |> List.length |> uint32) < threshold then
             failwithf "Need more than %d shares to compute secret" threshold
         else
             constructPolynomial shares 0
-            |> BigRational.ToBigInt
