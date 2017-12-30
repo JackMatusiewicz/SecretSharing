@@ -20,7 +20,7 @@ module RandomGeneration =
                     let store = Array.create 4 (byte 0)
                     r.GetBytes(store)
                     let value = BitConverter.ToInt32(store,0)
-                    value &&& (0x7FFFFFFF)
+                    (value &&& (0x7FFFFFFF)) % 65536
         Generator (f,r)
 
     ///Generates a random positive big integer, of the required size.
@@ -30,5 +30,5 @@ module RandomGeneration =
                     let store = Array.create bytesInBigint (byte 0)
                     r.GetBytes(store)
                     store.[bytesInBigint - 1] <- (store.[bytesInBigint - 1] &&& (byte 0x7F))
-                    BigInteger(store)
+                    BigInteger(store) % (bigint 65536)
         Generator (f,r)
