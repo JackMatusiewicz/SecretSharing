@@ -2,7 +2,6 @@ namespace SecretSharing
 
 open Reader
 open System
-open MathNet.Numerics
 open System.Numerics
 
 type Share = int * bigint
