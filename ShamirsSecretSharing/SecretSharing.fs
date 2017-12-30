@@ -40,8 +40,7 @@ module SecretSharing =
         let xValue = (bigint shareNumber)
         graph.PolynomialTerms
         |> List.map (fun term -> BigInteger.Pow(xValue, term.Power) * term.Coefficient)
-        |> List.fold (+) (bigint 0)
-        |> (fun bi -> bi % (bigint 65537))
+        |> List.fold (fun bi s -> (bi + s) % (bigint 65537)) (bigint 0)
         |> (fun share -> (shareNumber, share))
 
     let private createDesiredShares (numberOfShares : int) (graph : SecretGraph) =

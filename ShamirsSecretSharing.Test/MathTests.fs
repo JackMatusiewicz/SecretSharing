@@ -26,7 +26,6 @@ module MathTests =
     [<Test>]
     [<Repeat(50)>]
     let ``Given two numbers, m and n, the gcd multiplied by lcm equals m * n``() =
-        let makeTuple a b = a,b
         let a = (RandomGeneration.generate numGenerator)
         let b = (RandomGeneration.generate numGenerator)
 
