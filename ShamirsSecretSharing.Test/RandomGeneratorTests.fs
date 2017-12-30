@@ -10,7 +10,7 @@ module RandomGeneratorTests =
     [<Test>]
     let ``Given a random int generator, when asked to generate 100 numbers then all are unique`` () =
         let generator = RandomGeneration.makeRandomIntGenerator ()
-        let values = Array.init 100 (fun _ -> RandomGeneration.generate generator)
+        let values = Array.init 10 (fun _ -> RandomGeneration.generate generator)
         let store = HashSet<int>()
         Array.fold (fun (store : HashSet<int>) v ->
                         if store.Contains(v) then
@@ -22,7 +22,7 @@ module RandomGeneratorTests =
     [<Test>]
     let ``Given a random bigint generator, when asked to generate 100 numbers then all are unique`` () =
         let generator = RandomGeneration.makeRandomBigintGenerator (8)
-        let values = Array.init 100 (fun _ -> RandomGeneration.generate generator)
+        let values = Array.init 10 (fun _ -> RandomGeneration.generate generator)
         let store = HashSet<bigint>()
         Array.fold (fun (store : HashSet<bigint>) v ->
                         if store.Contains(v) then
