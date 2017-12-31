@@ -32,7 +32,7 @@ module Math =
     let (%%) (a : bigint) (modulus : bigint) =
         let rec calc (a : bigint) =
             match a with
-            | _ when a >= (bigint 0) && a < modulus ->
+            | _ when a >= (bigint 0) ->
                 a % modulus
             | _ ->
                 calc (a + modulus)
