@@ -28,3 +28,12 @@ module Math =
             else
                 Some i
         else None
+
+    let (%%) (a : bigint) (modulus : bigint) =
+        let rec calc (a : bigint) =
+            match a with
+            | _ when a >= (bigint 0) && a < modulus ->
+                a % modulus
+            | _ ->
+                calc (a + modulus)
+        calc a

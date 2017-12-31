@@ -3,6 +3,7 @@ namespace SecretSharing
 open Reader
 open System
 open System.Numerics
+open Math
 
 type Share = int * bigint
 type BigRati = bigint * bigint //TODO - move pls
@@ -41,7 +42,7 @@ module SecretSharing =
         graph.PolynomialTerms
         |> List.map (fun term -> BigInteger.Pow(xValue, term.Power) * term.Coefficient)
         |> List.fold (+) (bigint 0)
-        |> (fun bi -> bi % (bigint 65537))
+        |> (fun bi -> bi %% (bigint 65537))
         |> (fun share -> (shareNumber, share))
 
     let private createDesiredShares (numberOfShares : int) (graph : SecretGraph) =
@@ -64,24 +65,24 @@ module SecretSharing =
     let private biMult (a : BigRati) (b : BigRati) : BigRati = //TODO - move pls
         let (n1,d1) = a
         let (n2,d2) = b
-        ((n1 * n2),(d1 * d2))
+        ((n1 * n2) %% (bigint 65537),(d1 * d2) %% (bigint 65537))
 
     let private computeBasisPolynomial (vals : Share list) ((thisX,_) : Share) : int -> BigRati =
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun x -> fun z -> ((bigint (z - x)), (bigint (thisX - x))))
+        |> List.map (fun x -> fun z -> ((bigint (z - x)) %% (bigint 65537), (bigint (thisX - x)) %% (bigint 65537)))
         |> List.fold (fun f g -> biMult <!> f <*> g) (fun _ -> ((bigint 1), (bigint 1)))
 
     let private toBigInt (modulus : bigint) (br : BigRati) = //TODO - move to FFA
         let (num,den) = br
         let modInvDen = Math.modularInverse den modulus
         match modInvDen with
-        | None -> failwith "TBC" //TODO - fill this in!
-        | Some mid -> (num % modulus) * mid
+        | None -> failwithf "%s modinv %s is not valid" (den.ToString()) (modulus.ToString())//TODO - fill this in!
+        | Some mid -> (num %% modulus) * mid
  
     let addBis (modulus : bigint) (a : bigint) (b : bigint) =
-        (a + b) % modulus
+        (a + b) %% modulus
 
     let private constructPolynomial (vals : Share list) : int -> bigint =
         let mul (a : bigint) ((n,d) : BigRati) : BigRati =
