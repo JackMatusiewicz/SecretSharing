@@ -71,7 +71,7 @@ module SecretSharing =
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun x -> fun z -> ((bigint (z - x)) %% (bigint 65537), (bigint (thisX - x)) %% (bigint 65537)))
+        |> List.map (fun x -> fun z -> ((bigint (z - x)), (bigint (thisX - x))))
         |> List.fold (fun f g -> biMult <!> f <*> g) (fun _ -> ((bigint 1), (bigint 1)))
 
     let private toBigInt (modulus : bigint) (br : BigRati) = //TODO - move to FFA
