@@ -6,9 +6,10 @@ open System.Numerics
 open Math
 
 type Share = int * bigint
+type Prime = bigint
 
 type ShareGenerator =
-    abstract member GenerateSecret : uint32*uint32*bigint -> Share list
+    abstract member GenerateSecret : uint32*uint32*bigint -> Prime*Share list
 
 module SecretSharing =
 
@@ -57,6 +58,7 @@ module SecretSharing =
                 let next = calculateShare nextShare graph
                 create (remaining - 1) (next :: acc)
         create numberOfShares []
+        |> (fun shares -> graph.Prime,shares)
 
     let makeGenerator () =
         { new ShareGenerator with
@@ -69,7 +71,7 @@ module SecretSharing =
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
         |> List.map (fun xj -> fun x -> BigRational.fromFraction (bigint (x - xj)) (bigint (thisX - xj)))
-        |> List.map ((<!>) (FiniteFieldElement.fromRational prime))
+        |> List.map (Reader.map (FiniteFieldElement.fromRational prime))
         |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> FiniteFieldElement.fromBigInt prime (bigint 1))
 
     let private constructPolynomial (prime : bigint) (vals : Share list) : int -> bigint =

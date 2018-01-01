@@ -12,7 +12,7 @@ module RoundTripTests =
         let gen = RandomGeneration.makeRandomBigintGenerator 4
         let mySecret = RandomGeneration.generate gen
         let generator = SecretSharing.makeGenerator()
-        let shares = generator.GenerateSecret (3u, 6u, mySecret) |> List.take 3
+        let shares = generator.GenerateSecret (3u, 6u, mySecret) |> snd |> List.take 3
         let secret = SecretSharing.getSecret (bigint 65537) 3u shares
         Assert.That (secret, Is.EqualTo(mySecret))
     
@@ -22,7 +22,7 @@ module RoundTripTests =
         let gen = RandomGeneration.makeRandomBigintGenerator 4
         let mySecret = RandomGeneration.generate gen
         let generator = SecretSharing.makeGenerator()
-        let shares = generator.GenerateSecret (3u, 6u, mySecret) |> List.take 2
+        let shares = generator.GenerateSecret (3u, 6u, mySecret) |> snd |> List.take 2
         Assert.Throws<System.Exception>(fun () -> SecretSharing.getSecret (bigint 65537) 3u shares |> ignore) |> ignore
 
     [<Test>]
@@ -31,6 +31,6 @@ module RoundTripTests =
         let gen = RandomGeneration.makeRandomBigintGenerator 4
         let mySecret = RandomGeneration.generate gen
         let generator = SecretSharing.makeGenerator()
-        let shares = generator.GenerateSecret (5u, 6u, mySecret) |> List.take 1
+        let shares = generator.GenerateSecret (5u, 6u, mySecret) |> snd |> List.take 1
         let secret = SecretSharing.getSecret (bigint 65537) 1u shares
         Assert.That (secret, Is.Not.EqualTo(mySecret))
