@@ -25,9 +25,10 @@ module BigRational =
         {Numerator = t1.Numerator + t2.Numerator; Denominator = denomLcm}
 
     let sub (a : BigRational) (b : BigRational) =
-        let t1 = scalarMultiply (b.Denominator) a
-        let t2 = scalarMultiply (a.Denominator) b
-        {Numerator = t1.Numerator - t2.Numerator; Denominator = t1.Denominator}
+        let denomLcm = Math.lcm (a.Denominator) (b.Denominator)
+        let t1 = scalarMultiply (denomLcm / b.Denominator) a
+        let t2 = scalarMultiply (denomLcm / a.Denominator) b
+        {Numerator = t1.Numerator - t2.Numerator; Denominator = denomLcm}
 
     let multiply (a : BigRational) (b : BigRational) =
             {Numerator = a.Numerator * b.Numerator; Denominator = a.Denominator * b.Denominator}
