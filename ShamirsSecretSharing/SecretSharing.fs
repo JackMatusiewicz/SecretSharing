@@ -25,8 +25,9 @@ module SecretSharing =
 
     let private createSecretGraph
         (threshold : uint32)
-        (bigIntGenerator : RandomGeneration<bigint>)
-        (secret : bigint) : SecretGraph =
+        (bigIntGenerator : RandomGenerator<bigint>)
+        (secret : bigint)
+        (prime : bigint) : SecretGraph =
         let rec create (thresh : uint32) (acc : PolynomialTerm list) =
             match thresh with
             | 0u ->
@@ -37,7 +38,7 @@ module SecretSharing =
                 let term = {Power = (int thresh); Coefficient = coeff}
                 create (thresh - 1u) (term :: acc)
         let terms = create (threshold - 1u) []
-        {PolynomialTerms = terms; Prime = (bigint 65537)}
+        {PolynomialTerms = terms; Prime = prime}
 
     let private calculateShare (shareNumber : int) (graph : SecretGraph) : Share =
         let xValue = (bigint shareNumber)
@@ -63,7 +64,8 @@ module SecretSharing =
     let makeGenerator () =
         { new ShareGenerator with
                 member __.GenerateSecret (thresh, shares, secret) =
-                    createSecretGraph thresh (RandomGeneration.makeRandomBigintGenerator 4) secret
+                    let prime = BigInt.findLargerMersennePrime secret
+                    createSecretGraph thresh (RandomGeneration.makeRandomBigIntRange prime) secret prime
                     |> createDesiredShares (int shares) }
 
     let private computeBasisPolynomial (prime : bigint) (vals : Share list) ((thisX,_) : Share) : int -> FiniteFieldElement =
