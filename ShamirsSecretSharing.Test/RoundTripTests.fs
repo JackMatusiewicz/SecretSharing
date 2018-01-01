@@ -12,7 +12,7 @@ module RoundTripTests =
         let gen = RandomGeneration.makeRandomBigintGenerator 4
         let mySecret = RandomGeneration.generate gen
         let generator = SecretSharing.makeGenerator()
-        let p, shares = generator.GenerateSecret (5u, 6u, mySecret)
+        let p, shares = generator.GenerateSecret (3u, 6u, mySecret)
         printfn "%A" p
         let shares = shares |> List.take 3
         let secret = SecretSharing.getSecret p 3u shares

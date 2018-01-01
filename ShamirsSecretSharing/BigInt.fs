@@ -45,12 +45,12 @@ module BigInt =
     let findSetBitPositionOfLargerPowerOfTwo (value : bigint) =
         findPowerOfTwoLargerAndSetBitPosition value |> fst
 
-    let tryFindLargerMersennePrime (value : bigint) = Some (bigint 65537)
-        (*let bitPosition = findSetBitPositionOfLargerPowerOfTwo value
+    let tryFindLargerMersennePrime (value : bigint) =
+        let bitPosition = findSetBitPositionOfLargerPowerOfTwo value
         mersennePrimes
         |> List.filter (fun x -> x > bitPosition)
         |> List.tryHead
-        |> Option.map (fun pow -> BigInteger.Pow((bigint 2), pow) - (bigint 1))*)
+        |> Option.map (fun pow -> BigInteger.Pow((bigint 2), pow) - (bigint 1))
 
     let findLargerMersennePrime (value : bigint) =
         match tryFindLargerMersennePrime value with
