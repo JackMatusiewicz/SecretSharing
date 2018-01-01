@@ -80,9 +80,6 @@ module SecretSharing =
         match modInvDen with
         | None -> failwithf "%s modinv %s is not valid" (den.ToString()) (modulus.ToString())//TODO - fill this in!
         | Some mid -> num * mid
- 
-    let addBis (modulus : bigint) (a : bigint) (b : bigint) =
-        (a + b) %% modulus
 
     let private constructPolynomial (vals : Share list) : int -> bigint =
         let mul (a : bigint) ((n,d) : BigRati) : BigRati =
