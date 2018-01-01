@@ -79,7 +79,7 @@ module SecretSharing =
         |> List.map (fun ((_,y), f) -> fun x -> (f x) * y)
         |> List.map (Reader.map <| fun x -> x.ToBigInt())
         |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> (bigint 0))
-        |> ((<!>) (fun x -> x %% prime))
+        |> (Reader.map (fun x -> x %% prime))
 
     let getSecret (prime : bigint) (threshold : uint32) (shares : Share list) : bigint =
         if (shares |> List.length |> uint32) < threshold then
