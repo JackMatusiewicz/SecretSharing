@@ -7,9 +7,9 @@ open SecretSharing
 module RoundTripTests =
 
     [<Test>]
-    [<Repeat(300)>]
+    [<Repeat(2000)>]
     let ``Given a secret and a required number of shares, when those shares are present then secret is returned`` () =
-        let gen = RandomGeneration.makeRandomBigintGenerator 4
+        let gen = RandomGeneration.makeRandomBigintGenerator 40
         let mySecret = RandomGeneration.generate gen
         let generator = SecretSharing.makeGenerator()
         let p, shares = generator.GenerateSecret (3u, 6u, mySecret)
