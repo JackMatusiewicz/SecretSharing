@@ -29,6 +29,7 @@ module Math =
                 Some i
         else None
 
+    ///Calculates the modulus, including when the value is negative.
     let (%%) (a : bigint) (modulus : bigint) =
         let rec calc (a : bigint) =
             match a with

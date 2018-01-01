@@ -6,7 +6,6 @@ open System.Numerics
 open Math
 
 type Share = int * bigint
-type BigRati = bigint * bigint //TODO - move pls
 
 //TODO - in order to actually be useful, this must use finite field arithmetic!
 
@@ -24,7 +23,10 @@ module SecretSharing =
         PolynomialTerms : PolynomialTerm list
     }
 
-    let private createSecretGraph (threshold : uint32) (bigIntGenerator : RandomGeneration<bigint>) (secret : bigint) : SecretGraph =
+    let private createSecretGraph
+        (threshold : uint32)
+        (bigIntGenerator : RandomGeneration<bigint>)
+        (secret : bigint) : SecretGraph =
         let rec create (thresh : uint32) (acc : PolynomialTerm list) =
             match thresh with
             | 0u ->
@@ -51,7 +53,7 @@ module SecretSharing =
             | _ when remaining <= 0 ->
                 acc
             | _ ->
-                let nextShare = remaining //TODO - check if this makes it less secure
+                let nextShare = remaining //TODO - replace with random element in finite field.
                 let next = calculateShare nextShare graph
                 create (remaining - 1) (next :: acc)
         create numberOfShares []
@@ -62,33 +64,27 @@ module SecretSharing =
                     createSecretGraph thresh (RandomGeneration.makeRandomBigintGenerator 4) secret
                     |> createDesiredShares (int shares) }
 
-    let private biMult (a : BigRati) (b : BigRati) : BigRati = //TODO - move pls
-        let (n1,d1) = a
-        let (n2,d2) = b
-        ((n1 * n2) %% (bigint 65537),(d1 * d2) %% (bigint 65537))
+    let private biMult (a : BigRational) (b : BigRational) : BigRational = //TODO - move pls
+        (a * b) % (bigint 65537)
 
-    let private computeBasisPolynomial (vals : Share list) ((thisX,_) : Share) : int -> BigRati =
+    let private computeBasisPolynomial (vals : Share list) ((thisX,_) : Share) : int -> BigRational =
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun x -> fun z -> ((bigint (z - x)), (bigint (thisX - x))))
-        |> List.fold (fun f g -> biMult <!> f <*> g) (fun _ -> ((bigint 1), (bigint 1)))
+        |> List.map (fun xj -> fun x -> BigRational.fromFraction (bigint (x - xj)) (bigint (thisX - xj)))
+        |> List.fold (fun f g -> biMult <!> f <*> g) (fun _ -> BigRational.fromBigInt (bigint 1))
 
-    let private toBigInt (modulus : bigint) (br : BigRati) = //TODO - move to FFA
-        let (num,den) = br
-        let modInvDen = Math.modularInverse den modulus
+    let private toBigInt (modulus : bigint) (br : BigRational) = //TODO - move to FFA
+        let modInvDen = Math.modularInverse (br.Denominator) modulus
         match modInvDen with
-        | None -> failwithf "%s modinv %s is not valid" (den.ToString()) (modulus.ToString())//TODO - fill this in!
-        | Some mid -> num * mid
+        | None -> failwithf "%s modinv %s is not valid" ((br.Denominator).ToString()) (modulus.ToString())
+        | Some mid -> (br.Numerator) * mid
 
     let private constructPolynomial (vals : Share list) : int -> bigint =
-        let mul (a : bigint) ((n,d) : BigRati) : BigRati =
-            (n*a),d
-
         vals
         |> List.map (computeBasisPolynomial vals)
         |> List.zip vals
-        |> List.map (fun ((_,y), f) -> fun x -> mul y (f x))
+        |> List.map (fun ((_,y), f) -> fun x -> (f x) * y)
         |> List.map (fun f -> toBigInt (bigint 65537) <!> f)
         |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> (bigint 0))
         |> (fun f -> fun x -> (f x) %% (bigint 65537))

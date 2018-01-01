@@ -1,6 +1,7 @@
 namespace SecretSharing
 
 open System.Numerics
+open Math
 
 type BigRational = {
     Numerator : bigint
@@ -26,6 +27,9 @@ type BigRational = {
         let t1 = a * (denomLcm / a.Denominator)
         let t2 = b * (denomLcm / b.Denominator)
         {Numerator = t1.Numerator - t2.Numerator; Denominator = denomLcm}
+
+    static member (%) (a : BigRational, b : bigint) =
+        {Numerator = a.Numerator %% b; Denominator = a.Denominator %% b}
 
 module BigRational =
 
