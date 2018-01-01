@@ -13,7 +13,7 @@ module BigRationalTests =
         let r = System.Random()
         for i in 0 .. 3000 do
             let a = BigRational.fromFraction (bigint  (r.Next())) (bigint  (r.Next()))
-            let c = BigRational.sub a a
+            let c = a - a
             Assert.That(c.Numerator, Is.EqualTo (bigint 0))
 
     [<Test>]
@@ -21,8 +21,8 @@ module BigRationalTests =
         let r = System.Random()
         for i in 0 .. 3000 do
             let a = BigRational.fromFraction (bigint  (r.Next())) (bigint  (r.Next()))
-            let c = BigRational.add a a
-            let b = BigRational.scalarMultiply (bigint 2) (a)
+            let c = a + a
+            let b = a * (bigint 2)
             Assert.That(c.Numerator, Is.EqualTo (b.Numerator))
             Assert.That(c.Denominator, Is.EqualTo (b.Denominator))
 
@@ -31,5 +31,14 @@ module BigRationalTests =
         let r = System.Random()
         for i in 0 .. 3000 do
             let a = BigRational.fromFraction (bigint  (r.Next())) (bigint  (r.Next()))
-            let c = BigRational.divide a a
+            let c = a / a
             Assert.That(c.Numerator, Is.EqualTo (c.Denominator))
+
+    [<Test>]
+    let ``Ensure Multiply and divide cancel eachother out`` () =
+        let r = System.Random()
+        for i in 0 .. 3000 do
+            let a = BigRational.fromFraction (bigint  (r.Next())) (bigint  (r.Next()))
+            let c = (a * a) / a
+            let result = a - c
+            Assert.That(result.Numerator, Is.EqualTo(bigint 0))
