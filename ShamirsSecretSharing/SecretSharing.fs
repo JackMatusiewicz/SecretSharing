@@ -79,7 +79,7 @@ module SecretSharing =
         let modInvDen = Math.modularInverse den modulus
         match modInvDen with
         | None -> failwithf "%s modinv %s is not valid" (den.ToString()) (modulus.ToString())//TODO - fill this in!
-        | Some mid -> (num %% modulus) * mid
+        | Some mid -> num * mid
  
     let addBis (modulus : bigint) (a : bigint) (b : bigint) =
         (a + b) %% modulus
@@ -93,7 +93,8 @@ module SecretSharing =
         |> List.zip vals
         |> List.map (fun ((_,y), f) -> fun x -> mul y (f x))
         |> List.map (fun f -> toBigInt (bigint 65537) <!> f)
-        |> List.fold (fun f g -> (addBis (bigint 65537)) <!> f <*> g) (fun _ -> (bigint 0))
+        |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> (bigint 0))
+        |> (fun f -> fun x -> (f x) %% (bigint 65537))
 
     let getSecret (threshold : uint32) (shares : Share list) : bigint =
         if (shares |> List.length |> uint32) < threshold then
