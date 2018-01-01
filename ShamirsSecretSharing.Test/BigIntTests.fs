@@ -9,7 +9,6 @@ open Math
 module BigIntTests =
 
     [<Test>]
-    let ``Given a negative number, first power of two larger is 2`` () =
-        let x = (bigint -1)
-        let result = BigInt.findPowerOfTwoLarger x
-        Assert.That(result, Is.EqualTo(bigint 2))
+    let ``Given a random value, when finding a larger mersenne prime then the correct value is returned`` () =
+        let prime = BigInt.findLargerMersennePrime (bigint 1)
+        Assert.That(prime, Is.EqualTo(bigint 3))
