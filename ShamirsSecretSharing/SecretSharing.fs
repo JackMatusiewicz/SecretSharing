@@ -5,7 +5,7 @@ open System
 open System.Numerics
 open Math
 
-type Coordinate = int * bigint
+type Coordinate = bigint * bigint
 
 type Prime = bigint
 
@@ -41,21 +41,21 @@ module SecretSharing =
         let terms = create (threshold - 1u) []
         {PolynomialTerms = terms; Prime = prime}
 
-    let private calculateShare (xValue : int) (graph : SecretGraph) : Coordinate =
+    let private calculateShare (xValue : bigint) (graph : SecretGraph) : Coordinate =
         graph.PolynomialTerms
-        |> List.map (fun term -> BigInteger.Pow((bigint xValue), term.Power) * term.Coefficient)
+        |> List.map (fun term -> BigInteger.Pow( xValue, term.Power) * term.Coefficient)
         |> List.map (FiniteFieldElement.fromBigInt (graph.Prime))
         |> List.fold (+) (FiniteFieldElement.fromBigInt (graph.Prime) (bigint 0))
         |> (fun x -> x.ToBigInt())
         |> (fun share -> (xValue, share))
 
-    let private createDesiredShares (numberOfShares : int) (graph : SecretGraph) =
+    let private createDesiredShares (numberOfShares : int) rg (graph : SecretGraph) =
         let rec create (remaining : int) (acc : Coordinate list) =
             match remaining with
             | _ when remaining <= 0 ->
                 acc
             | _ ->
-                let nextShare = remaining
+                let nextShare = RandomGeneration.generate rg
                 let next = calculateShare nextShare graph
                 create (remaining - 1) (next :: acc)
         create numberOfShares []
@@ -67,20 +67,20 @@ module SecretSharing =
                     let prime = BigInt.findLargerMersennePrime secret
                     let generator = RandomGeneration.makeRandomBigIntRange prime
                     createSecretGraph thresh generator secret prime
-                    |> createDesiredShares (int shares) }
+                    |> createDesiredShares (int shares) generator }
 
     let private computeBasisPolynomial
         (prime : bigint)
         (vals : Coordinate list)
-        ((thisX,_) : Coordinate) : int -> FiniteFieldElement =
+        ((thisX,_) : Coordinate) : bigint -> FiniteFieldElement =
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun xj -> fun x -> BigRational.fromFraction (bigint (x - xj)) (bigint (thisX - xj)))
+        |> List.map (fun xj -> fun x -> BigRational.fromFraction (x - xj) (thisX - xj))
         |> List.map (Reader.map (FiniteFieldElement.fromRational prime))
         |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> FiniteFieldElement.fromBigInt prime (bigint 1))
 
-    let private constructPolynomial (prime : bigint) (vals : Coordinate list) : int -> bigint =
+    let private constructPolynomial (prime : bigint) (vals : Coordinate list) : bigint -> bigint =
         vals
         |> List.map (computeBasisPolynomial prime vals)
         |> List.zip vals
@@ -93,4 +93,4 @@ module SecretSharing =
         if (shares |> List.length |> uint32) < threshold then
             failwithf "Need more than %d shares to compute secret" threshold
         else
-            constructPolynomial prime shares 0
+            constructPolynomial prime shares (bigint 0)
