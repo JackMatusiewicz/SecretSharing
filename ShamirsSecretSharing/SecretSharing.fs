@@ -5,11 +5,12 @@ open System
 open System.Numerics
 open Math
 
-type Share = bigint * bigint
+type Coordinate = int * bigint
+
 type Prime = bigint
 
 type ShareGenerator =
-    abstract member GenerateSecret : uint32*uint32*bigint -> Prime*Share list
+    abstract member GenerateSecret : uint32*uint32*bigint -> Prime * Coordinate list
 
 module SecretSharing =
 
@@ -40,21 +41,21 @@ module SecretSharing =
         let terms = create (threshold - 1u) []
         {PolynomialTerms = terms; Prime = prime}
 
-    let private calculateShare (xValue : bigint) (graph : SecretGraph) : Share =
+    let private calculateShare (xValue : int) (graph : SecretGraph) : Coordinate =
         graph.PolynomialTerms
-        |> List.map (fun term -> BigInteger.Pow(xValue, term.Power) * term.Coefficient)
+        |> List.map (fun term -> BigInteger.Pow((bigint xValue), term.Power) * term.Coefficient)
         |> List.map (FiniteFieldElement.fromBigInt (graph.Prime))
         |> List.fold (+) (FiniteFieldElement.fromBigInt (graph.Prime) (bigint 0))
         |> (fun x -> x.ToBigInt())
         |> (fun share -> (xValue, share))
 
-    let private createDesiredShares (numberOfShares : int) (rg : RandomGenerator<bigint>) (graph : SecretGraph) =
-        let rec create (remaining : int) (acc : Share list) =
+    let private createDesiredShares (numberOfShares : int) (graph : SecretGraph) =
+        let rec create (remaining : int) (acc : Coordinate list) =
             match remaining with
             | _ when remaining <= 0 ->
                 acc
             | _ ->
-                let nextShare = RandomGeneration.generate rg
+                let nextShare = remaining
                 let next = calculateShare nextShare graph
                 create (remaining - 1) (next :: acc)
         create numberOfShares []
@@ -66,20 +67,20 @@ module SecretSharing =
                     let prime = BigInt.findLargerMersennePrime secret
                     let generator = RandomGeneration.makeRandomBigIntRange prime
                     createSecretGraph thresh generator secret prime
-                    |> createDesiredShares (int shares) generator }
+                    |> createDesiredShares (int shares) }
 
     let private computeBasisPolynomial
         (prime : bigint)
-        (vals : Share list)
-        ((thisX,_) : Share) : bigint -> FiniteFieldElement =
+        (vals : Coordinate list)
+        ((thisX,_) : Coordinate) : int -> FiniteFieldElement =
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun xj -> fun x -> BigRational.fromFraction (x - xj) (thisX - xj))
+        |> List.map (fun xj -> fun x -> BigRational.fromFraction (bigint (x - xj)) (bigint (thisX - xj)))
         |> List.map (Reader.map (FiniteFieldElement.fromRational prime))
         |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> FiniteFieldElement.fromBigInt prime (bigint 1))
 
-    let private constructPolynomial (prime : bigint) (vals : Share list) : bigint -> bigint =
+    let private constructPolynomial (prime : bigint) (vals : Coordinate list) : int -> bigint =
         vals
         |> List.map (computeBasisPolynomial prime vals)
         |> List.zip vals
@@ -88,8 +89,8 @@ module SecretSharing =
         |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> (bigint 0))
         |> (Reader.map (fun x -> x %% prime))
 
-    let getSecret (prime : bigint) (threshold : uint32) (shares : Share list) : bigint =
+    let getSecret (prime : bigint) (threshold : uint32) (shares : Coordinate list) : bigint =
         if (shares |> List.length |> uint32) < threshold then
             failwithf "Need more than %d shares to compute secret" threshold
         else
-            constructPolynomial prime shares (bigint 0)
+            constructPolynomial prime shares 0
