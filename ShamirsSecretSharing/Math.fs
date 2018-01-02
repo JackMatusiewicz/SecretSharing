@@ -36,5 +36,6 @@ module Math =
             | _ when a >= (bigint 0) ->
                 a % modulus
             | _ ->
-                calc (a + modulus)
+                let b = (-a / modulus) + (bigint 1)
+                (a + (b * modulus)) % modulus
         calc a
