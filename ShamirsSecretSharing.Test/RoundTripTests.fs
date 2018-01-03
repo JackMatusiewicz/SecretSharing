@@ -14,7 +14,8 @@ module RoundTripTests =
         let generator = SecretSharing.makeGenerator()
         let p, shares = generator.GenerateSecret (3u, 6u, mySecret)
         let shares = shares |> List.take 3
-        let secret = SecretSharing.getSecret p shares
+        let recon = SecretSharing.makeReconstructor ()
+        let secret = recon.ReconstructSecret (p,shares)
         Assert.That (secret, Is.EqualTo(mySecret))
     
     [<Test>]
@@ -25,7 +26,8 @@ module RoundTripTests =
         let generator = SecretSharing.makeGenerator()
         let p, shares = generator.GenerateSecret (5u, 6u, mySecret)
         let shares = shares |> List.take 2
-        let secret = SecretSharing.getSecret p shares
+        let recon = SecretSharing.makeReconstructor ()
+        let secret = recon.ReconstructSecret (p,shares)
         Assert.That (secret, Is.Not.EqualTo(mySecret))
 
     [<Test>]
@@ -36,5 +38,6 @@ module RoundTripTests =
         let generator = SecretSharing.makeGenerator()
         let p, shares = generator.GenerateSecret (5u, 6u, mySecret)
         let share = shares |> List.take 1
-        let secret = SecretSharing.getSecret p share
+        let recon = SecretSharing.makeReconstructor ()
+        let secret = recon.ReconstructSecret (p,share)
         Assert.That (secret, Is.Not.EqualTo(mySecret))
