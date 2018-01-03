@@ -19,16 +19,16 @@ module SecretSharing =
         Coefficient : bigint
     }
 
-    type private SecretGraph = {
+    type private Polynomial = {
         PolynomialTerms : PolynomialTerm list
         Prime : bigint
     }
 
-    let private createSecretGraph
+    let private createPolynomial
         (threshold : uint32)
         (bigIntGenerator : RandomGenerator<bigint>)
         (secret : bigint)
-        (prime : bigint) : SecretGraph =
+        (prime : bigint) : Polynomial =
         let rec create (thresh : uint32) (acc : PolynomialTerm list) =
             match thresh with
             | 0u ->
@@ -41,7 +41,7 @@ module SecretSharing =
         let terms = create (threshold - 1u) []
         {PolynomialTerms = terms; Prime = prime}
 
-    let private calculateShare (xValue : bigint) (graph : SecretGraph) : Coordinate =
+    let private calculateShare (xValue : bigint) (graph : Polynomial) : Coordinate =
         graph.PolynomialTerms
         |> List.map (fun term -> BigInteger.Pow( xValue, term.Power) * term.Coefficient)
         |> List.map (FiniteFieldElement.fromBigInt (graph.Prime))
@@ -49,7 +49,7 @@ module SecretSharing =
         |> (fun x -> x.ToBigInt())
         |> (fun share -> (xValue, share))
 
-    let private createDesiredShares (numberOfShares : int) rg (graph : SecretGraph) =
+    let private createDesiredShares (numberOfShares : int) (rg : RandomGenerator<bigint>) (graph : Polynomial) =
         let rec create (remaining : int) (acc : Coordinate list) =
             match remaining with
             | _ when remaining <= 0 ->
@@ -66,7 +66,7 @@ module SecretSharing =
                 member __.GenerateSecret (thresh, shares, secret) =
                     let prime = BigInt.findLargerMersennePrime secret
                     let generator = RandomGeneration.makeRandomBigIntRange prime
-                    createSecretGraph thresh generator secret prime
+                    createPolynomial thresh generator secret prime
                     |> createDesiredShares (int shares) generator }
 
     let private computeBasisPolynomial
@@ -89,8 +89,6 @@ module SecretSharing =
         |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> (bigint 0))
         |> (Reader.map (fun x -> x %% prime))
 
-    let getSecret (prime : bigint) (threshold : uint32) (shares : Coordinate list) : bigint =
-        if (shares |> List.length |> uint32) < threshold then
-            failwithf "Need more than %d shares to compute secret" threshold
-        else
-            constructPolynomial prime shares (bigint 0)
+    let getSecret (prime : bigint) (shares : Coordinate list) : bigint =
+        let f = constructPolynomial prime shares
+        f (bigint 0)
