@@ -38,3 +38,5 @@ module FiniteFieldElement =
 
     let fromBigInt (modulus : bigint) (value : bigint) =
         {Modulus = modulus; Element = BigRational.fromBigInt value}
+
+    let toBigInt (v : FiniteFieldElement) = v.ToBigInt()

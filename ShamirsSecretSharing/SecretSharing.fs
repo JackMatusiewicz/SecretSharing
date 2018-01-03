@@ -25,7 +25,7 @@ module SecretSharing =
     }
 
     let private createPolynomial
-        (threshold : uint32)
+        (minimumSegementsToSolve : uint32)
         (bigIntGenerator : RandomGenerator<bigint>)
         (secret : bigint)
         (prime : bigint) : Polynomial =
@@ -38,7 +38,7 @@ module SecretSharing =
                 let coeff = RandomGeneration.generate bigIntGenerator
                 let term = {Power = (int thresh); Coefficient = coeff}
                 create (thresh - 1u) (term :: acc)
-        let terms = create (threshold - 1u) []
+        let terms = create (minimumSegementsToSolve - 1u) []
         {PolynomialTerms = terms; Prime = prime}
 
     let private calculateShare (xValue : bigint) (graph : Polynomial) : Coordinate =
@@ -49,7 +49,7 @@ module SecretSharing =
         |> (fun x -> x.ToBigInt())
         |> (fun share -> (xValue, share))
 
-    let private createDesiredShares (numberOfShares : int) (rg : RandomGenerator<bigint>) (graph : Polynomial) =
+    let private createDesiredShares (numberOfCoordinates : int) (rg : RandomGenerator<bigint>) (graph : Polynomial) =
         let rec create (remaining : int) (acc : Coordinate list) =
             match remaining with
             | _ when remaining <= 0 ->
@@ -58,15 +58,15 @@ module SecretSharing =
                 let nextShare = RandomGeneration.generate rg
                 let next = calculateShare nextShare graph
                 create (remaining - 1) (next :: acc)
-        create numberOfShares []
+        create numberOfCoordinates []
         |> (fun shares -> graph.Prime,shares)
 
     let makeGenerator () =
         { new ShareGenerator with
-                member __.GenerateSecret (thresh, shares, secret) =
+                member __.GenerateSecret (minimumSegementsToSolve, shares, secret) =
                     let prime = BigInt.findLargerMersennePrime secret
                     let generator = RandomGeneration.makeRandomBigIntRange prime
-                    createPolynomial thresh generator secret prime
+                    createPolynomial minimumSegementsToSolve generator secret prime
                     |> createDesiredShares (int shares) generator }
 
     let private computeBasisPolynomial
@@ -78,15 +78,15 @@ module SecretSharing =
         |> List.filter (fun x -> x <> thisX)
         |> List.map (fun xj -> fun x -> BigRational.fromFraction (x - xj) (thisX - xj))
         |> List.map (Reader.map (FiniteFieldElement.fromRational prime))
-        |> List.fold (fun f g -> (*) <!> f <*> g) (fun _ -> FiniteFieldElement.fromBigInt prime (bigint 1))
+        |> List.fold (fun f g -> f <?> (*) <*> g) (fun _ -> FiniteFieldElement.fromBigInt prime (bigint 1))
 
     let private constructPolynomial (prime : bigint) (vals : Coordinate list) : bigint -> bigint =
         vals
         |> List.map (computeBasisPolynomial prime vals)
         |> List.zip vals
         |> List.map (fun ((_,y), f) -> fun x -> (f x) * y)
-        |> List.map (Reader.map <| fun x -> x.ToBigInt())
-        |> List.fold (fun f g -> (+) <!> f <*> g) (fun _ -> (bigint 0))
+        |> List.map (Reader.map FiniteFieldElement.toBigInt)
+        |> List.fold (fun f g -> f <?> (+) <*> g) (fun _ -> (bigint 0))
         |> (Reader.map (fun x -> x %% prime))
 
     let getSecret (prime : bigint) (shares : Coordinate list) : bigint =
