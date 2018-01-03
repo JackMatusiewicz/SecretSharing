@@ -1,5 +1,6 @@
 
 
+
 I# ShamirsSecretSharing
 
 [![Build status](https://ci.appveyor.com/api/projects/status/uow4jkvbkm9s6rk3?svg=true)](https://ci.appveyor.com/project/JackMatusiewicz/ShamirsSecretSharing)
@@ -23,6 +24,9 @@ SecretSharing uses finite field arithmetic, so the prime is required for reconst
 
 In order to reconstruct the secret, do the following:
 ```
-let secret = SecretSharing.getSecret prime providedCoords
+let reconstructor = SecretSharing.makeReconstructor ()
+let secret = reconstructor.ReconstructSecret (prime,providedCoords)
 ```
 Where prime is the same prime number that wass generated above.
+
+Both makeGenerator and makeReconstructor return an object implementing an interface for the task, so this is easy to use both from F# and from C#.
