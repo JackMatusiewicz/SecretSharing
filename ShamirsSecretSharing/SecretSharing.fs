@@ -41,7 +41,7 @@ module SecretSharing =
         let terms = create (minimumSegementsToSolve - 1u) []
         {PolynomialTerms = terms; Prime = prime}
 
-    let private calculateShare (xValue : bigint) (graph : Polynomial) : Coordinate =
+    let private getCoordinate (xValue : bigint) (graph : Polynomial) : Coordinate =
         graph.PolynomialTerms
         |> List.map (fun term -> BigInteger.Pow( xValue, term.Power) * term.Coefficient)
         |> List.map (FiniteFieldElement.fromBigInt (graph.Prime))
@@ -49,25 +49,25 @@ module SecretSharing =
         |> (fun x -> x.ToBigInt())
         |> (fun share -> (xValue, share))
 
-    let private createDesiredShares (numberOfCoordinates : int) (rg : RandomGenerator<bigint>) (graph : Polynomial) =
+    let private createCoordinates (numberOfCoordinates : int) (rg : RandomGenerator<bigint>) (graph : Polynomial) =
         let rec create (remaining : int) (acc : Coordinate list) =
             match remaining with
             | _ when remaining <= 0 ->
                 acc
             | _ ->
-                let nextShare = RandomGeneration.generate rg
-                let next = calculateShare nextShare graph
-                create (remaining - 1) (next :: acc)
+                let x = RandomGeneration.generate rg
+                let coordinate = getCoordinate x graph
+                create (remaining - 1) (coordinate :: acc)
         create numberOfCoordinates []
         |> (fun shares -> graph.Prime,shares)
 
     let makeGenerator () =
         { new ShareGenerator with
-                member __.GenerateSecret (minimumSegementsToSolve, shares, secret) =
+                member __.GenerateSecret (minimumSegementsToSolve, numberOfCoords, secret) =
                     let prime = BigInt.findLargerMersennePrime secret
                     let generator = RandomGeneration.makeRandomBigIntRange prime
                     createPolynomial minimumSegementsToSolve generator secret prime
-                    |> createDesiredShares (int shares) generator }
+                    |> createCoordinates (int numberOfCoords) generator }
 
     let private computeBasisPolynomial
         (prime : bigint)
