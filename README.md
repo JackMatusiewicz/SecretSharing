@@ -5,7 +5,7 @@
 
 About
 -----
-An F# implementation of Shamir's Secret Sharing.
+An F# implementation of Shamir's Secret Sharing with as few third party dependencies as possible.
 
 Use
 -----
