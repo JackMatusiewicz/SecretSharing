@@ -1,4 +1,4 @@
-
+ 
 
 
 I# ShamirsSecretSharing
@@ -16,7 +16,7 @@ At the moment this library only allows you to share BigInteger secrets, so you w
 
 In F#, to create a new set of shares you call:
 ```
-let generator = SecretSharing.makeGenerator()
+let generator = SecretSharing.makeGenerator ()
 let prime, coords = generator.GenerateSecret (3u, 6u, mySecret)
 ```
 
