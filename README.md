@@ -9,4 +9,12 @@ An F# implementation of Shamir's Secret Sharing with as few third party dependen
 
 Use
 -----
-At the moment this library only allows you to share BigInteger secrets
+At the moment this library only allows you to share BigInteger secrets, so you will need to convert any strings to BigIntegers (this will be supported soon).
+
+In F#, to create a new set of shares you call:
+```
+let generator = SecretSharing.makeGenerator()
+let prime, coords = generator.GenerateSecret (3u, 6u, mySecret)
+```
+
+SecretSharing uses finite field arithmetic, so the prime is required for reconstructing the secret. The coords are a list of (x,y) tuples. The parameters to the GenerateSecret method are: The minimum number of coordinates required to reconstruct the secret, the number of coordinates to generate, the secret to share.
