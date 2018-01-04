@@ -10,7 +10,7 @@ type Coordinate = bigint * bigint
 type Prime = bigint
 
 type CoordinateGenerator =
-    abstract member GenerateSecret : uint32*uint32*bigint -> Prime * Coordinate list
+    abstract member GenerateCoordinates : uint32*uint32*bigint -> Prime * Coordinate list
 
 type SecretReconstructor =
     abstract member ReconstructSecret : bigint*Coordinate list -> bigint
@@ -69,7 +69,7 @@ module SecretSharing =
 
     let makeGenerator () =
         { new CoordinateGenerator with
-                member __.GenerateSecret (minimumSegementsToSolve, numberOfCoords, secret) =
+                member __.GenerateCoordinates (minimumSegementsToSolve, numberOfCoords, secret) =
                     let prime = BigInt.findLargerMersennePrime secret
                     let generator = RandomGeneration.makeRandomBigIntRange prime
                     createPolynomial minimumSegementsToSolve generator secret prime
