@@ -47,8 +47,8 @@ module SecretSharing =
     let private getCoordinate (xValue : bigint) (polynomial : Polynomial) : Coordinate =
         polynomial.Terms
         |> List.map (fun term -> BigInteger.Pow( xValue, term.Power) * term.Coefficient)
-        |> List.map (FiniteFieldElement.fromBigInt (graph.Prime))
-        |> List.fold (+) (FiniteFieldElement.fromBigInt (graph.Prime) (bigint 0))
+        |> List.map (FiniteFieldElement.fromBigInt (polynomial.Prime))
+        |> List.fold (+) (FiniteFieldElement.fromBigInt (polynomial.Prime) (bigint 0))
         |> (fun x -> x.ToBigInt())
         |> (fun share -> (xValue, share))
 
