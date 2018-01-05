@@ -13,7 +13,7 @@ At the moment this library only allows you to share BigInteger secrets, so you w
 
 In F#, to create a new set of shares you call:
 ```
-let generator = SecretSharing.makeGenerator ()
+let generator = SecretSharer.make ()
 let prime, coords = generator.GenerateCoordinates (3u, 6u, mySecret)
 ```
 
@@ -21,7 +21,7 @@ SecretSharing uses finite field arithmetic, so the prime is required for reconst
 
 In order to reconstruct the secret, do the following:
 ```
-let reconstructor = SecretSharing.makeReconstructor ()
+let reconstructor = SecretReconstructor.make ()
 let secret = reconstructor.ReconstructSecret (prime,providedCoords)
 ```
 Where prime is the same prime number that wass generated above.
