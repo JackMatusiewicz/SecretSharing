@@ -41,6 +41,7 @@ module SecretSharing =
                     |> createCoordinates (int numberOfCoords) generator
                     |> (fun shares -> poly.Prime,shares) }
 
+    //TODO - move everything below this into a SecretReconstruction module.
     let private computeBasisPolynomial
         (prime : bigint)
         (vals : Coordinate list)
@@ -52,7 +53,7 @@ module SecretSharing =
         |> List.map (Reader.map (FiniteFieldElement.fromRational prime))
         |> List.fold (fun f g -> f <?> (*) <*> g) (fun _ -> FiniteFieldElement.fromBigInt prime (bigint 1))
 
-    let private constructPolynomial (prime : bigint) (vals : Coordinate list) : bigint -> bigint =
+    let private reconstructPolynomial (prime : bigint) (vals : Coordinate list) : bigint -> bigint =
         vals
         |> List.map (computeBasisPolynomial prime vals)
         |> List.zip vals
@@ -62,7 +63,7 @@ module SecretSharing =
         |> (Reader.map (fun x -> x %% prime))
 
     let getSecret (prime : bigint) (shares : Coordinate list) : bigint =
-        let f = constructPolynomial prime shares
+        let f = reconstructPolynomial prime shares
         f (bigint 0)
 
     let makeReconstructor () =
