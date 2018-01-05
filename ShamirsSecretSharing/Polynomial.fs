@@ -1,5 +1,7 @@
 ﻿namespace SecretSharing
+ 
 open System
+open System.Numerics
 
 type private PolynomialTerm = {
     Power : int
