@@ -26,10 +26,10 @@ type FiniteFieldElement = {
         let denominator = __.Element.Denominator
         let modulus = __.Modulus
 
-        let modInvDen = Math.modularInverse (denominator) modulus
+        let modInvDen = Math.modularInverse denominator modulus
         match modInvDen with
         | None -> failwithf "%s modinv %s is not valid" ((denominator).ToString()) (modulus.ToString())
-        | Some mid -> (numerator) * mid
+        | Some mid -> numerator * mid
 
 module FiniteFieldElement =
 
