@@ -15,7 +15,7 @@ type CoordinateGenerator =
 type SecretReconstructor =
     abstract member ReconstructSecret : bigint*Coordinate list -> bigint
 
-module SecretSharing =
+module SecretSharer =
 
     let private createCoordinates
         (numberOfCoordinates : int)
@@ -31,7 +31,7 @@ module SecretSharing =
                 create (remaining - 1) ((x,y) :: acc)
         create numberOfCoordinates []
 
-    let makeGenerator () =
+    let make () =
         { new CoordinateGenerator with
                 member __.GenerateCoordinates (minimumSegementsToSolve, numberOfCoords, secret) =
                     let prime = BigInt.findLargerMersennePrime secret
@@ -40,6 +40,8 @@ module SecretSharing =
                     poly
                     |> createCoordinates (int numberOfCoords) generator
                     |> (fun shares -> poly.Prime,shares) }
+
+module SecretReconstructor =
 
     //TODO - move everything below this into a SecretReconstruction module.
     let private computeBasisPolynomial
@@ -66,7 +68,7 @@ module SecretSharing =
         let f = reconstructPolynomial prime shares
         f (bigint 0)
 
-    let makeReconstructor () =
+    let make () =
         { new SecretReconstructor with
                 member __.ReconstructSecret (prime, coords) : bigint =
                     getSecret prime coords }
