@@ -1,7 +1,9 @@
-﻿namespace ShamirsSecretSharing
+﻿namespace SecretSharing
+ 
 open System
+open System.Numerics
 
-type private PolynomialTerm = {
+type PolynomialTerm = {
     Power : int
     Coefficient : bigint
 }
