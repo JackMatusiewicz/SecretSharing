@@ -10,7 +10,6 @@ type ISecretReconstructor =
 
 module SecretReconstructor =
 
-    //TODO - move everything below this into a SecretReconstruction module.
     let private computeBasisPolynomial
         (prime : bigint)
         (vals : Coordinate list)
