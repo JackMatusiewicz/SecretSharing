@@ -5,7 +5,7 @@ open System
 open System.Numerics
 open Math
 
-type SecretReconstructor =
+type ISecretReconstructor =
     abstract member ReconstructSecret : bigint*Coordinate list -> bigint
 
 module SecretReconstructor =
@@ -36,6 +36,6 @@ module SecretReconstructor =
         f (bigint 0)
 
     let make () =
-        { new SecretReconstructor with
+        { new ISecretReconstructor with
                 member __.ReconstructSecret (prime, coords) : bigint =
                     getSecret prime coords }
