@@ -1,4 +1,4 @@
-﻿namespace ShamirsSecretSharing
+﻿namespace SecretSharing
 open System
 
 type private PolynomialTerm = {
