@@ -9,8 +9,8 @@ module RoundTripTests =
     [<Test>]
     [<Repeat(2000)>]
     let ``Given a secret and a required number of shares, when those shares are present then secret is returned`` () =
-        let gen = RandomGeneration.makeRandomBigintGenerator 40
-        let mySecret = RandomGeneration.generate gen
+        let gen = RandomGenerator.makeRandomBigintGenerator 40
+        let mySecret = RandomGenerator.generate gen
         let generator = SecretSharing.makeGenerator()
         let p, shares = generator.GenerateCoordinates (3u, 6u, mySecret)
         let shares = shares |> List.take 3
@@ -21,8 +21,8 @@ module RoundTripTests =
     [<Test>]
     [<Repeat(300)>]
     let ``Given a secret and a required number of shares, when not enough shares are present then error is thrown`` () =
-        let gen = RandomGeneration.makeRandomBigintGenerator 4
-        let mySecret = RandomGeneration.generate gen
+        let gen = RandomGenerator.makeRandomBigintGenerator 4
+        let mySecret = RandomGenerator.generate gen
         let generator = SecretSharing.makeGenerator()
         let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
         let shares = shares |> List.take 2
@@ -33,8 +33,8 @@ module RoundTripTests =
     [<Test>]
     [<Repeat(300)>]
     let ``Given a secret and a required number of shares, when not enough shares are present then secret is not returned`` () =
-        let gen = RandomGeneration.makeRandomBigintGenerator 4
-        let mySecret = RandomGeneration.generate gen
+        let gen = RandomGenerator.makeRandomBigintGenerator 4
+        let mySecret = RandomGenerator.generate gen
         let generator = SecretSharing.makeGenerator()
         let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
         let share = shares |> List.take 1

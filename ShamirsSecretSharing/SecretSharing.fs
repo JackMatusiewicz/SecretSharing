@@ -17,41 +17,6 @@ type SecretReconstructor =
 
 module SecretSharing =
 
-    type private PolynomialTerm = {
-        Power : int
-        Coefficient : bigint
-    }
-
-    type private Polynomial = {
-        Terms : PolynomialTerm list
-        Prime : bigint
-    }
-
-    let private createPolynomial
-        (minimumSegementsToSolve : uint32)
-        (bigIntGenerator : RandomGenerator<bigint>)
-        (secret : bigint)
-        (prime : bigint) : Polynomial =
-        let rec create (thresh : uint32) (acc : PolynomialTerm list) =
-            match thresh with
-            | 0u ->
-                let constant = {Power = 0; Coefficient = secret}
-                (constant :: acc) |> List.rev
-            | _ ->
-                let coeff = RandomGeneration.generate bigIntGenerator
-                let term = {Power = (int thresh); Coefficient = coeff}
-                create (thresh - 1u) (term :: acc)
-        let terms = create (minimumSegementsToSolve - 1u) []
-        {Terms = terms; Prime = prime}
-
-    let private getCoordinate (xValue : bigint) (polynomial : Polynomial) : Coordinate =
-        polynomial.Terms
-        |> List.map (fun term -> BigInteger.Pow( xValue, term.Power) * term.Coefficient)
-        |> List.map (FiniteFieldElement.fromBigInt (polynomial.Prime))
-        |> List.fold (+) (FiniteFieldElement.fromBigInt (polynomial.Prime) (bigint 0))
-        |> (fun x -> x.ToBigInt())
-        |> (fun share -> (xValue, share))
-
     let private createCoordinates
         (numberOfCoordinates : int)
         (rg : RandomGenerator<bigint>)
@@ -61,19 +26,20 @@ module SecretSharing =
             | _ when remaining <= 0 ->
                 acc
             | _ ->
-                let x = RandomGeneration.generate rg
-                let coordinate = getCoordinate x polynomial
-                create (remaining - 1) (coordinate :: acc)
+                let x = RandomGenerator.generate rg
+                let y = Polynomial.evaluate x polynomial
+                create (remaining - 1) ((x,y) :: acc)
         create numberOfCoordinates []
-        |> (fun shares -> polynomial.Prime,shares)
 
     let makeGenerator () =
         { new CoordinateGenerator with
                 member __.GenerateCoordinates (minimumSegementsToSolve, numberOfCoords, secret) =
                     let prime = BigInt.findLargerMersennePrime secret
-                    let generator = RandomGeneration.makeRandomBigIntRange prime
-                    createPolynomial minimumSegementsToSolve generator secret prime
-                    |> createCoordinates (int numberOfCoords) generator }
+                    let generator = RandomGenerator.makeRandomBigIntRange prime
+                    let poly = Polynomial.create minimumSegementsToSolve generator secret prime
+                    poly
+                    |> createCoordinates (int numberOfCoords) generator
+                    |> (fun shares -> poly.Prime,shares) }
 
     let private computeBasisPolynomial
         (prime : bigint)

@@ -7,7 +7,8 @@ open System.Security.Cryptography
 type RandomGenerator<'t> =
     | Generator of (unit -> 't)
 
-module RandomGeneration =
+[<CompilationRepresentation (CompilationRepresentationFlags.ModuleSuffix)>]
+module RandomGenerator =
 
     let generate (generator : RandomGenerator<'t>) : 't =
         let (Generator (rg)) = generator
