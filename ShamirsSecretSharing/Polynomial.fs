@@ -33,9 +33,9 @@ module Polynomial =
         let terms = create (minimumSegementsToSolve - 1u) []
         {Terms = terms; Prime = prime}
 
-    let evaluate (xValue : bigint) (polynomial : Polynomial) : bigint =
+    let evaluate (x : bigint) (polynomial : Polynomial) : bigint =
         polynomial.Terms
-        |> List.map (fun term -> BigInteger.Pow( xValue, term.Power) * term.Coefficient)
+        |> List.map (fun term -> BigInteger.Pow(x, term.Power) * term.Coefficient)
         |> List.map (FiniteFieldElement.fromBigInt (polynomial.Prime))
         |> List.fold (+) (FiniteFieldElement.fromBigInt (polynomial.Prime) (bigint 0))
-        |> (fun x -> x.ToBigInt())
+        |> (FiniteFieldElement.toBigInt)
