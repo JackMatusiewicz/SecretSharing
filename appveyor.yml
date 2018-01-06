@@ -3,14 +3,16 @@ image: Visual Studio 2015
 environment:
   COVERALLS_REPO_TOKEN:
     secure: FholzZ3McIymXC8JfMl+mlusTMt8qKo5vOE43pZssh/+6yBpqQrYEzOqGH/nj1eN
-configuration: Release
+configuration:
+  - Debug
+  - Release
 before_build:
-- nuget restore
+  - nuget restore
 build:
   project: ShamirsSecretSharing.sln
   verbosity: minimal
 after_test:
-  - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[*]* -[ShamirsSecretSharing.Test]*" -target:"packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" -targetargs:"/domain:single ShamirsSecretSharing.Test/bin/release/ShamirsSecretSharing.Test.dll" -output:coverage.xml
+  - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[*]* -[ShamirsSecretSharing.Test]*" -target:"packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" -targetargs:"/domain:single ShamirsSecretSharing.Test/bin/debug/ShamirsSecretSharing.Test.dll" -output:coverage.xml
   - packages\coveralls.io.1.4.2\tools\coveralls.net.exe --opencover coverage.xml
 artifacts:
   - path: ShamirsSecretSharing\bin\$(configuration)
