@@ -18,6 +18,7 @@ module SecretSharer =
         (numberOfCoordinates : int)
         (rg : RandomGenerator<bigint>)
         (polynomial : Polynomial) =
+
         let rec create (remaining : int) (acc : Coordinate list) =
             match remaining with
             | _ when remaining <= 0 ->
@@ -28,12 +29,20 @@ module SecretSharer =
                 create (remaining - 1) ((x,y) :: acc)
         create numberOfCoordinates []
 
+    let generateCoordinates
+        (minimumSegmentsToSolve : uint32)
+        (numberOfCoords : uint32)
+        (secret : bigint) =
+
+        let prime = BigInt.findLargerMersennePrime secret
+        let generator = RandomGenerator.makeRandomBigIntRange prime
+        let poly = Polynomial.create minimumSegementsToSolve generator secret prime
+
+        poly
+        |> createCoordinates (int numberOfCoords) generator
+        |> (fun shares -> poly.Prime,shares)
+
     let make () =
         { new ISecretSharer with
-                member __.GenerateCoordinates (minimumSegementsToSolve, numberOfCoords, secret) =
-                    let prime = BigInt.findLargerMersennePrime secret
-                    let generator = RandomGenerator.makeRandomBigIntRange prime
-                    let poly = Polynomial.create minimumSegementsToSolve generator secret prime
-                    poly
-                    |> createCoordinates (int numberOfCoords) generator
-                    |> (fun shares -> poly.Prime,shares) }
+                member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
+                    generateCoordinates minimumSegmentsToSolve numberOfCoords secret }

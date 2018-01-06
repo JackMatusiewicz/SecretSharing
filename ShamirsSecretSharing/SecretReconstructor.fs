@@ -14,6 +14,7 @@ module SecretReconstructor =
         (prime : bigint)
         (vals : Coordinate list)
         ((thisX,_) : Coordinate) : bigint -> FiniteFieldElement =
+
         vals
         |> List.map fst
         |> List.filter (fun x -> x <> thisX)
