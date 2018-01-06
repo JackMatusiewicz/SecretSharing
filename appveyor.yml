@@ -2,7 +2,7 @@ image: Visual Studio 2015
 
 environment:
   COVERALLS_REPO_TOKEN:
-    secure: Fic+w+TySzx5QTzv2uD3/9n0wabGCk5gww1T+jM43ivcsBLtNsxKvi5ebNlXlwZf
+    secure: FholzZ3McIymXC8JfMl+mlusTMt8qKo5vOE43pZssh/+6yBpqQrYEzOqGH/nj1eN
 before_build:
 - nuget restore
 build:
