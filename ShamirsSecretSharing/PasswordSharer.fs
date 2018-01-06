@@ -11,7 +11,7 @@ type IPasswordSharer =
 //Wraps the SecretSharer so you can deal with strings, rather than with bigints.
 module PasswordSharer =
 
-    let private toBigInt (password : string) =
+    let toBigInt (password : string) =
         password.ToCharArray ()
         |> Array.map byte
         |> bigint
