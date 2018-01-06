@@ -36,7 +36,7 @@ module SecretSharer =
 
         let prime = BigInt.findLargerMersennePrime secret
         let generator = RandomGenerator.makeRandomBigIntRange prime
-        let poly = Polynomial.create minimumSegementsToSolve generator secret prime
+        let poly = Polynomial.create minimumSegmentsToSolve generator secret prime
 
         poly
         |> createCoordinates (int numberOfCoords) generator
