@@ -37,6 +37,7 @@ module Polynomial =
         let terms = create (numberOfTerms - 1u) []
         {Terms = terms; Prime = prime}
 
+    ///Evaluates a polynomial at a particular x-value.
     let evaluate (x : bigint) (polynomial : Polynomial) : bigint =
         polynomial.Terms
         |> List.map (fun term -> BigInteger.Pow(x, term.Power) * term.Coefficient)
