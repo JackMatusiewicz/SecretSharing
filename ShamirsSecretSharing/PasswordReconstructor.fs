@@ -9,6 +9,7 @@ open Math
 type IPasswordReconstructor =
     abstract member ReconstructSecret : bigint*Coordinate list -> string
 
+//Wraps the SecretReconstructor so you can deal with strings, rather than with bigints.
 module PasswordReconstructor =
 
     let toString (v : bigint) =

@@ -8,7 +8,7 @@ open Math
 type IPasswordSharer =
     abstract member GenerateCoordinates : uint32 * uint32 * string -> Prime * Coordinate list
 
-///Wraps the secret sharer to deal with string passwords.
+//Wraps the SecretSharer so you can deal with strings, rather than with bigints.
 module PasswordSharer =
 
     let toBigInt (password : string) =

@@ -4,8 +4,9 @@ open System.Numerics
 
 module BigInt =
 
-    //Not a comprehensive list, will add more later
-    let mersennePrimes = [
+    ///Not a comprehensive list, will add more later
+    ///Values (n) such that (2^n) - 1 is a prime.
+    let mersennePrimesExponents = [
         2
         3
         5
@@ -47,7 +48,7 @@ module BigInt =
 
     let tryFindLargerMersennePrime (value : bigint) =
         let bitPosition = findSetBitPositionOfLargerPowerOfTwo value
-        mersennePrimes
+        mersennePrimesExponents
         |> List.filter (fun x -> x > bitPosition)
         |> List.tryHead
         |> Option.map (fun pow -> BigInteger.Pow((bigint 2), pow) - (bigint 1))
