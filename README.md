@@ -30,7 +30,7 @@ Both makeGenerator and makeReconstructor return an object implementing an interf
 Use with passwords
 -----
 
-A small wrapper has been provided to allow the use of string secrets, rather than bigIntegers, here is an example:
+A small wrapper has been provided to allow the use of string secrets, rather than bigIntegers. Here is an example:
 
 ```
 let generator = PasswordSharer.make ()
