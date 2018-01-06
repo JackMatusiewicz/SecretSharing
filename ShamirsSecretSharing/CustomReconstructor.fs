@@ -14,7 +14,7 @@ module CustomReconstructor =
         |> convert
 
     let make (convert : Func<bigint, 'a>) =
-        { new IPasswordReconstructor with
+        { new ICustomReconstructor<_> with
                 member __.ReconstructSecret (prime, coords) : string =
                     let f = Function.fromFunc convert
                     getPassword f prime coords }

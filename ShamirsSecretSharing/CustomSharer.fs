@@ -20,7 +20,7 @@ module CustomSharer =
         |> SecretSharer.generateCoordinates minimumSegmentsToSolve numberOfCoords
 
     let make (convert : Func<'a, bigint>) =
-        { new ICustomSharer with
+        { new ICustomSharer<_> with
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
                     let f = Function.fromFunc convert
                     generateCoordinates f minimumSegmentsToSolve numberOfCoords secret }
