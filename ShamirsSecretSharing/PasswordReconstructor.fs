@@ -12,7 +12,7 @@ type IPasswordReconstructor =
 //Wraps the SecretReconstructor so you can deal with strings, rather than with bigints.
 module PasswordReconstructor =
 
-    let toString (v : bigint) =
+    let private toString (v : bigint) =
         v.ToByteArray()
         |> Array.map char
         |> Array.fold
@@ -20,8 +20,11 @@ module PasswordReconstructor =
             (StringBuilder())
         |> (fun sb -> sb.ToString())
 
+    let getPassword (prime : bigint) (coords : Coordinate list) =
+        SecretReconstructor.getSecret prime coords
+        |> toString
+
     let make () =
         { new IPasswordReconstructor with
                 member __.ReconstructSecret (prime, coords) : string =
-                    SecretReconstructor.getSecret prime coords
-                    |> toString }
+                    getPassword prime coords }

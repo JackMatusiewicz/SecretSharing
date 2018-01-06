@@ -11,14 +11,21 @@ type IPasswordSharer =
 //Wraps the SecretSharer so you can deal with strings, rather than with bigints.
 module PasswordSharer =
 
-    let toBigInt (password : string) =
+    let private toBigInt (password : string) =
         password.ToCharArray ()
         |> Array.map byte
         |> bigint
 
+    let generateCoordinates
+        (minimumSegmentsToSolve : uint32)
+        (numberOfCoords : uint32)
+        (secret : string) =
+
+        secret
+        |> toBigInt
+        |> SecretSharer.generateCoordinates minimumSegmentsToSolve numberOfCoords
+
     let make () =
         { new IPasswordSharer with
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
-                    secret
-                    |> toBigInt
-                    |> SecretSharer.generateCoordinates minimumSegmentsToSolve numberOfCoords }
+                    generateCoordinates minimumSegmentsToSolve numberOfCoords secret }
