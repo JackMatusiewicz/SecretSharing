@@ -16,21 +16,25 @@ type Polynomial = {
 [<CompilationRepresentation (CompilationRepresentationFlags.ModuleSuffix)>]
 module Polynomial =
 
+    ///Generates a polynomial with the required number of terms,
+    ///The degrees used for the terms range from (0, numberOfTerms-1). Each degree is used once.
+    ///The constant parameter allows you to define a particular constant for the polynomial.
+    ///Everything else is randomly generated.
     let create
-        (minimumSegementsToSolve : uint32)
+        (numberOfTerms : uint32)
         (bigIntGenerator : RandomGenerator<bigint>)
-        (secret : bigint)
+        (constant : bigint)
         (prime : bigint) : Polynomial =
         let rec create (thresh : uint32) (acc : PolynomialTerm list) =
             match thresh with
             | 0u ->
-                let constant = {Power = 0; Coefficient = secret}
+                let constant = {Power = 0; Coefficient = constant}
                 (constant :: acc) |> List.rev
             | _ ->
                 let coeff = RandomGenerator.generate bigIntGenerator
                 let term = {Power = (int thresh); Coefficient = coeff}
                 create (thresh - 1u) (term :: acc)
-        let terms = create (minimumSegementsToSolve - 1u) []
+        let terms = create (numberOfTerms - 1u) []
         {Terms = terms; Prime = prime}
 
     let evaluate (x : bigint) (polynomial : Polynomial) : bigint =
