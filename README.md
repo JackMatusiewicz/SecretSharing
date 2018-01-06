@@ -7,9 +7,8 @@ About
 -----
 An F# implementation of Shamir's Secret Sharing with as few third party dependencies as possible.
 
-Use
+Use with BigIntegers
 -----
-At the moment this library only allows you to share BigInteger secrets, so you will need to convert any strings to BigIntegers (this will be supported soon).
 
 In F#, to create a new set of shares you call:
 ```
@@ -26,4 +25,19 @@ let secret = reconstructor.ReconstructSecret (prime,providedCoords)
 ```
 Where prime is the same prime number that wass generated above.
 
-Both makeGenerator and makeReconstructor return an object implementing an interface for the task, so this is easy to use both from F# and from C#.
+Both makeGenerator and makeReconstructor return an object implementing an interface for the task, so this is easy to use both from F# and from C#. If you're using F# you can choose to use the objects or the underlying functions directly.
+
+Use with passwords
+-----
+
+A small wrapper has been provided to allow the use of string secrets, rather than bigIntegers, here is an example:
+
+```
+let generator = PasswordSharer.make ()
+let prime, coords = generator.GenerateCoordinates (3u, 6u, "TestPassword175")
+
+let reconstructor = PasswordReconstructor.make ()
+let secret = reconstructor.ReconstructSecret (prime,providedCoords)
+```
+
+If you're using F#, you can choose to ignore the provided classes and use the functions directly.
