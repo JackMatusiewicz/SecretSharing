@@ -1,13 +1,11 @@
 namespace SecretSharing
 
-open Reader
 open System
 open System.Numerics
 open System.Text
-open Math
 
 type IPasswordReconstructor =
-    abstract member ReconstructSecret : bigint*Coordinate list -> string
+    abstract member ReconstructSecret : bigint * Coordinate list -> string
 
 //Wraps the SecretReconstructor so you can deal with strings, rather than with bigints.
 module PasswordReconstructor =

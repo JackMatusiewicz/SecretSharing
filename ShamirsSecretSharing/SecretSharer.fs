@@ -10,7 +10,7 @@ type Coordinate = bigint * bigint
 type Prime = bigint
 
 type ISecretSharer =
-    abstract member GenerateCoordinates : uint32*uint32*bigint -> Prime * Coordinate list
+    abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Prime * Coordinate list
 
 module SecretSharer =
 
