@@ -2,16 +2,30 @@
 
 open NUnit.Framework
 open SecretSharing
+open System
 open System.Text
 
 [<TestFixture>]
 module CustomRoundTripTests =
 
+    let toBigInt (password : string) =
+        password.ToCharArray ()
+        |> Array.map byte
+        |> bigint
+
+    let toString (v : bigint) =
+        v.ToByteArray()
+        |> Array.map char
+        |> Array.fold
+            (fun (sb : StringBuilder) (c : char) -> sb.Append(c))
+            (StringBuilder())
+        |> (fun sb -> sb.ToString())
+
     let createSharer () =
-        CustomSharer.make (Func<string, bigint> (PasswordSharer.toBigInt))
+        CustomSharer.make (Func<string, bigint> (toBigInt))
 
     let createReconstructor () =
-        CustomReconstructor.make (Func<bigint, string> (PasswordReconstructor.toString))
+        CustomReconstructor.make (Func<bigint, string> (toString))
 
     let generateRandomPassword (len : int) =
         let rec make (len : int) (acc : StringBuilder) (rg : RandomGenerator<int>) =

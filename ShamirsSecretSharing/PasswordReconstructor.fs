@@ -10,7 +10,7 @@ type IPasswordReconstructor =
 //Wraps the SecretReconstructor so you can deal with strings, rather than with bigints.
 module PasswordReconstructor =
 
-    let toString (v : bigint) =
+    let private toString (v : bigint) =
         v.ToByteArray()
         |> Array.map char
         |> Array.fold

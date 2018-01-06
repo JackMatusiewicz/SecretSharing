@@ -9,7 +9,10 @@ type ICustomReconstructor<'a> =
 //Wraps the SecretReconstructor so you can deal with anything, rather than with bigints.
 module CustomReconstructor =
 
-    let getPassword (convert : bigint -> 'a) (prime : bigint) (coords : Coordinate list) =
+    let getPassword<'a>
+        (convert : bigint -> 'a)
+        (prime : bigint) (coords : Coordinate list) =
+
         SecretReconstructor.getSecret prime coords
         |> convert
 

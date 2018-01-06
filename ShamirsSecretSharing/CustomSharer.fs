@@ -9,7 +9,7 @@ type ICustomSharer<'a> =
 //Wraps the SecretSharer so you can deal with anything, rather than with bigints.
 module CustomSharer =
 
-    let generateCoordinates
+    let generateCoordinates<'a>
         (toBigInt : 'a -> bigint)
         (minimumSegmentsToSolve : uint32)
         (numberOfCoords : uint32)
