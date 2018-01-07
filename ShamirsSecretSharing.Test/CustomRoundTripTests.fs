@@ -26,7 +26,7 @@ module CustomRoundTripTests =
     let createSharer () =
         CustomSharer.make (Func<string, bigint> (toBigInt)) id
 
-    let createReconstructor () =
+    let createReconstructor : ICustomReconstructor<string, Coordinate> () =
         CustomReconstructor.make (Func<bigint, string> (toString)) id
 
     let generateRandomPassword (len : int) =

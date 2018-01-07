@@ -9,17 +9,17 @@ type ICustomReconstructor<'a, 'b> =
 //Wraps the SecretReconstructor so you can deal with anything, rather than with bigints.
 module CustomReconstructor =
 
-    let getPassword<'a>
+    let getPassword<'a, 'b>
         (fromBigInt : bigint -> 'a)
         (toCoordinate : 'b -> Coordinate)
-        (prime : bigint) (encodedCoords : 'b list) =
+        (prime : bigint) (encodedCoords : 'b list) : 'a =
 
         encodedCoords
         |> List.map toCoordinate
         |> SecretReconstructor.getSecret prime
         |> fromBigInt
 
-    let make (fromBigInt : Func<bigint, 'a>) (toCoord : Func<'b, Coordinate>) =
+    let make<'a,'b> (fromBigInt : Func<bigint, 'a>) (toCoord : Func<'b, Coordinate>) =
         { new ICustomReconstructor<_, _> with
                 member __.ReconstructSecret (prime, coords) : string =
                     let f = Function.fromFunc fromBigInt
