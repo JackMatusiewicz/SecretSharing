@@ -53,7 +53,7 @@ let sharer = CustomSharer.make ((Func<string, bigint> toBigInt), id)
 
 let reconstructor = CustomReconstructor.make ((Func<bigint, string> toString), id)
 
-let p, shares = sharer.GenerateCoordinates (3u, 6u, "TestPassword")
-let shares = shares |> List.take 3
-let secret = reconstructor.ReconstructSecret (p,shares)
+sharer.GenerateCoordinates (3u, 6u, "TestPassword")
+|> fun (p, coords) -> (p, coords |> List.take 3)
+|> reconstructor.ReconstructSecret
 ```
