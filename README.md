@@ -11,7 +11,7 @@ Use with BigIntegers
 -----
 
 In F#, to create a new set of shares you call:
-```
+```fsharp
 let generator = SecretSharer.make ()
 let prime, coords = generator.GenerateCoordinates (3u, 6u, mySecret)
 ```
@@ -19,7 +19,7 @@ let prime, coords = generator.GenerateCoordinates (3u, 6u, mySecret)
 SecretSharing uses finite field arithmetic, so the prime is required for reconstructing the secret. The coords are a list of (x,y) tuples. The parameters to the GenerateSecret method are: The minimum number of coordinates required to reconstruct the secret, the number of coordinates to generate, the secret to share.
 
 In order to reconstruct the secret, do the following:
-```
+```fsharp
 let reconstructor = SecretReconstructor.make ()
 let secret = reconstructor.ReconstructSecret (prime,providedCoords)
 ```
@@ -33,7 +33,7 @@ Use with passwords
 In order to use this library for anything other than bigIntegers, use the CustomSharer and CustomReconstructor. These allow you to pass
 functions that will deal with custom types. Here is an example:
 
-```
+```fsharp
 let toBigInt (password : string) =
     password.ToCharArray ()
     |> Array.map byte
