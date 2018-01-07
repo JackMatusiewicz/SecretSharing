@@ -6,7 +6,7 @@ open System.Numerics
 open Math
 
 type ISecretReconstructor =
-    abstract member ReconstructSecret : bigint * Coordinate list -> bigint
+    abstract member ReconstructSecret : Prime * Coordinate list -> bigint
 
 module SecretReconstructor =
 
