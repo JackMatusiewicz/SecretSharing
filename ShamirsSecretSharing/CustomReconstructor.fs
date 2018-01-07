@@ -16,8 +16,8 @@ module CustomReconstructor =
 
         encodedCoords
         |> List.map toCoordinate
-        SecretReconstructor.getSecret prime
-        |> convert
+        |> SecretReconstructor.getSecret prime
+        |> fromBigInt
 
     let make (fromBigInt : Func<bigint, 'a>) (toCoord : Func<'b, Coordinate>) =
         { new ICustomReconstructor<_, _> with
