@@ -31,7 +31,7 @@ Use with passwords
 -----
 
 In order to use this library for anything other than bigIntegers, use the CustomSharer and CustomReconstructor. These allow you to pass
-functions that will deal with custom objects. Here is an example:
+functions that will deal with custom types. Here is an example:
 
 ```
 let toBigInt (password : string) =
