@@ -5,10 +5,6 @@ open System
 open System.Numerics
 open Math
 
-type Coordinate = bigint * bigint
-
-type Prime = bigint
-
 type ISecretSharer =
     abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Prime * Coordinate list
 

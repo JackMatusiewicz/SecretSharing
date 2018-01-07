@@ -2,6 +2,9 @@ namespace SecretSharing
 
 open System.Numerics
 
+type Coordinate = bigint * bigint
+type Prime = bigint
+
 module Math =
 
     let lcm (a : BigInteger) (b : BigInteger) =
