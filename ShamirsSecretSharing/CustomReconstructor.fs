@@ -20,4 +20,4 @@ module CustomReconstructor =
         { new ICustomReconstructor<_> with
                 member __.ReconstructSecret (prime, coords) : string =
                     let f = Function.fromFunc convert
-                    getPassword f prime coords }
+                    getPassword<_> f prime coords }

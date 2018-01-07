@@ -22,7 +22,7 @@ module CustomSharer =
         |> fun (prime, coords) -> (prime, List.map fromCoord coords)
 
     let make (toBigInt : Func<'a, bigint>) (fromCoord : Func<Coordinate, 'b>) =
-        { new ICustomSharer<_> with
+        { new ICustomSharer<_,_> with
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
                     let f = Function.fromFunc toBigInt
                     let g = Function.fromFunc fromCoord
