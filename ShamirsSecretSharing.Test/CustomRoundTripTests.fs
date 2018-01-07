@@ -21,8 +21,10 @@ module CustomRoundTripTests =
             (StringBuilder())
         |> (fun sb -> sb.ToString())
 
+    let id = fun a -> a
+
     let createSharer () =
-        CustomSharer.make (Func<string, bigint> (toBigInt))
+        CustomSharer.make (Func<string, bigint> (toBigInt)) (Func<Coordinate, Coordinate> (id))
 
     let createReconstructor () =
         CustomReconstructor.make (Func<bigint, string> (toString))
