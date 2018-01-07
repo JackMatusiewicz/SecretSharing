@@ -30,14 +30,30 @@ Both makeGenerator and makeReconstructor return an object implementing an interf
 Use with passwords
 -----
 
-A small wrapper has been provided to allow the use of string secrets, rather than bigIntegers. Here is an example:
+In order to use this library for anything other than bigIntegers, use the CustomSharer and CustomReconstructor. These allow you to pass
+functions that will deal with custom objects. Here is an example:
 
 ```
-let generator = PasswordSharer.make ()
-let prime, coords = generator.GenerateCoordinates (3u, 6u, "TestPassword175")
+let toBigInt (password : string) =
+        password.ToCharArray ()
+        |> Array.map byte
+        |> bigint
 
-let reconstructor = PasswordReconstructor.make ()
-let secret = reconstructor.ReconstructSecret (prime,providedCoords)
+    let toString (v : bigint) =
+        v.ToByteArray()
+        |> Array.map char
+        |> Array.fold
+            (fun (sb : StringBuilder) (c : char) -> sb.Append(c))
+            (StringBuilder())
+        |> (fun sb -> sb.ToString())
+
+    let id = (Func<Coordinate, Coordinate> (fun a -> a))
+
+    let sharer = CustomSharer.make (Func<string, bigint> (toBigInt)) id
+
+    let reconstructor = CustomReconstructor.make (Func<bigint, string> (toString)) id
+
+    let p, shares = sharer.GenerateCoordinates (3u, 6u, "TestPassword")
+    let shares = shares |> List.take 3
+    let secret = reconstructor.ReconstructSecret (p,shares)
 ```
-
-If you're using F#, you can choose to ignore the provided classes and use the functions directly.
