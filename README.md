@@ -35,25 +35,25 @@ functions that will deal with custom objects. Here is an example:
 
 ```
 let toBigInt (password : string) =
-        password.ToCharArray ()
-        |> Array.map byte
-        |> bigint
+    password.ToCharArray ()
+    |> Array.map byte
+    |> bigint
 
-    let toString (v : bigint) =
-        v.ToByteArray()
-        |> Array.map char
-        |> Array.fold
-            (fun (sb : StringBuilder) (c : char) -> sb.Append(c))
-            (StringBuilder())
-        |> (fun sb -> sb.ToString())
+let toString (v : bigint) =
+    v.ToByteArray()
+    |> Array.map char
+    |> Array.fold
+        (fun (sb : StringBuilder) (c : char) -> sb.Append(c))
+        (StringBuilder())
+    |> (fun sb -> sb.ToString())
 
-    let id = (Func<Coordinate, Coordinate> (fun a -> a))
+let id = (Func<Coordinate, Coordinate> (fun a -> a))
 
-    let sharer = CustomSharer.make (Func<string, bigint> (toBigInt)) id
+let sharer = CustomSharer.make (Func<string, bigint> (toBigInt)) id
 
-    let reconstructor = CustomReconstructor.make (Func<bigint, string> (toString)) id
+let reconstructor = CustomReconstructor.make (Func<bigint, string> (toString)) id
 
-    let p, shares = sharer.GenerateCoordinates (3u, 6u, "TestPassword")
-    let shares = shares |> List.take 3
-    let secret = reconstructor.ReconstructSecret (p,shares)
+let p, shares = sharer.GenerateCoordinates (3u, 6u, "TestPassword")
+let shares = shares |> List.take 3
+let secret = reconstructor.ReconstructSecret (p,shares)
 ```
