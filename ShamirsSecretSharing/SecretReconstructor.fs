@@ -13,12 +13,12 @@ module SecretReconstructor =
     let private computeBasisPolynomial
         (prime : bigint)
         (vals : Coordinate list)
-        ((thisX,_) : Coordinate) : bigint -> FiniteFieldElement =
+        ((xj,_) : Coordinate) : bigint -> FiniteFieldElement =
 
         vals
         |> List.map fst
-        |> List.filter (fun x -> x <> thisX)
-        |> List.map (fun xj -> fun x -> BigRational.fromFraction (x - xj) (thisX - xj))
+        |> List.filter (fun x -> x <> xj)
+        |> List.map (fun xm -> fun x -> BigRational.fromFraction (x - xm) (xj - xm))
         |> List.map (Reader.map (FiniteFieldElement.fromRational prime))
         |> List.fold (fun f g -> f <?> (*) <*> g) (fun _ -> FiniteFieldElement.fromBigInt prime (bigint 1))
 
