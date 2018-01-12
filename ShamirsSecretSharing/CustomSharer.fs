@@ -28,6 +28,6 @@ module CustomSharer =
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
                     let f = Function.fromFunc toBigInt
                     let g = Function.fromFunc fromCoord
-                    
+
                     generateCoordinates f g minimumSegmentsToSolve numberOfCoords secret
                     |> Tuple.map toGenericList }

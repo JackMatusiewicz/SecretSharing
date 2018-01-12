@@ -26,7 +26,7 @@ module CustomReconstructor =
                 member __.ReconstructSecret (prime, coords) : 'a =
                     let f = Function.fromFunc fromBigInt
                     let g = Function.fromFunc toCoord
-                    
+
                     coords
                     |> List.ofSeq
                     |> getPassword f g prime }
