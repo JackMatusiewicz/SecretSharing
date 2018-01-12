@@ -9,10 +9,10 @@ configuration:
 before_build:
   - nuget restore
 build:
-  project: ShamirsSecretSharing.sln
+  project: SecretSharing.sln
   verbosity: minimal
 after_test:
-  - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[*]* -[ShamirsSecretSharing.Test]*" -target:"packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" -targetargs:"/domain:single ShamirsSecretSharing.Test/bin/debug/ShamirsSecretSharing.Test.dll" -output:coverage.xml
+  - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[*]* -[SecretSharing.Test]*" -target:"packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" -targetargs:"/domain:single SecretSharing.Test/bin/debug/SecretSharing.Test.dll" -output:coverage.xml
   - packages\coveralls.io.1.4.2\tools\coveralls.net.exe --opencover coverage.xml
 artifacts:
-  - path: ShamirsSecretSharing\bin\$(configuration)
+  - path: SecretSharing\bin\$(configuration)
