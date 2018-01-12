@@ -1,10 +1,12 @@
 ﻿namespace SecretSharing
 
 open System
+open System.Collections.Generic
+open System.Linq
 open System.Numerics
 
 type ICustomReconstructor<'a, 'b> =
-    abstract member ReconstructSecret : Prime * 'b list -> 'a
+    abstract member ReconstructSecret : Prime * List<'b> -> 'a
 
 //Wraps the SecretReconstructor so you can deal with anything, rather than with bigints.
 module CustomReconstructor =
@@ -24,4 +26,7 @@ module CustomReconstructor =
                 member __.ReconstructSecret (prime, coords) : 'a =
                     let f = Function.fromFunc fromBigInt
                     let g = Function.fromFunc toCoord
-                    getPassword f g prime coords }
+                    
+                    coords
+                    |> List.ofSeq
+                    |> getPassword f g prime }

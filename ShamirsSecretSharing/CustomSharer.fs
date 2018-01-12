@@ -1,10 +1,12 @@
 ﻿namespace SecretSharing
 
 open System
+open System.Collections.Generic
 open System.Numerics
+open Function
 
 type ICustomSharer<'a,'b> =
-    abstract member GenerateCoordinates : uint32 * uint32 * 'a -> Prime * 'b list
+    abstract member GenerateCoordinates : uint32 * uint32 * 'a -> Prime * List<'b>
 
 //Wraps the SecretSharer so you can deal with anything, rather than with bigints.
 module CustomSharer =
@@ -26,4 +28,6 @@ module CustomSharer =
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
                     let f = Function.fromFunc toBigInt
                     let g = Function.fromFunc fromCoord
-                    generateCoordinates f g minimumSegmentsToSolve numberOfCoords secret }
+                    
+                    generateCoordinates f g minimumSegmentsToSolve numberOfCoords secret
+                    |> Tuple.map toGenericList }

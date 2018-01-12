@@ -2,5 +2,5 @@
 
 module Tuple =
 
-    let map (f : 'a -> 'b) (c : 'c, a : 'b) : 'c * 'b =
+    let map (f : 'a -> 'b) (c : 'c, a : 'a) : 'c * 'b =
         c, f a

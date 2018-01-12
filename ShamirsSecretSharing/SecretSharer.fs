@@ -2,11 +2,13 @@
 
 open Reader
 open System
+open System.Collections.Generic
 open System.Numerics
 open Math
+open Function
 
 type ISecretSharer =
-    abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Prime * Coordinate list
+    abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Prime * List<Coordinate>
 
 module SecretSharer =
 
@@ -41,4 +43,5 @@ module SecretSharer =
     let make () =
         { new ISecretSharer with
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
-                    generateCoordinates minimumSegmentsToSolve numberOfCoords secret }
+                    generateCoordinates minimumSegmentsToSolve numberOfCoords secret
+                    |> Tuple.map toGenericList }

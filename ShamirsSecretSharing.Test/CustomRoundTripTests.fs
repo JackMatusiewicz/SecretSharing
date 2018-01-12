@@ -4,6 +4,7 @@ open NUnit.Framework
 open SecretSharing
 open System
 open System.Text
+open Function
 
 [<TestFixture>]
 module CustomRoundTripTests =
@@ -39,6 +40,12 @@ module CustomRoundTripTests =
 
         let gen = RandomGenerator.makeRandomIntGenerator ()
         make len (StringBuilder()) gen
+    
+    let take (amount : int) (a : System.Collections.Generic.List<'a>) =
+        a
+        |> List.ofSeq
+        |> List.take amount
+        |> toGenericList
 
     [<Test>]
     [<Repeat(2000)>]
@@ -46,7 +53,7 @@ module CustomRoundTripTests =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
         let p, shares = generator.GenerateCoordinates (3u, 6u, mySecret)
-        let shares = shares |> List.take 3
+        let shares = shares |> take 3
         let recon = createReconstructor ()
         let secret = recon.ReconstructSecret (p,shares)
         Assert.That (secret, Is.EqualTo(mySecret))
@@ -57,7 +64,7 @@ module CustomRoundTripTests =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
         let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let shares = shares |> List.take 2
+        let shares = shares |> take 2
         let recon = createReconstructor ()
         let secret = recon.ReconstructSecret (p,shares)
         Assert.That (secret, Is.Not.EqualTo(mySecret))
@@ -68,7 +75,7 @@ module CustomRoundTripTests =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
         let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let share = shares |> List.take 1
+        let share = shares |> take 1
         let recon = createReconstructor ()
         let secret = recon.ReconstructSecret (p,share)
         Assert.That (secret, Is.Not.EqualTo(mySecret))

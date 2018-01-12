@@ -2,11 +2,13 @@ namespace SecretSharing
 
 open Reader
 open System
+open System.Collections.Generic
+open System.Linq
 open System.Numerics
 open Math
 
 type ISecretReconstructor =
-    abstract member ReconstructSecret : Prime * Coordinate list -> bigint
+    abstract member ReconstructSecret : Prime * List<Coordinate> -> bigint
 
 module SecretReconstructor =
 
@@ -38,4 +40,6 @@ module SecretReconstructor =
     let make () =
         { new ISecretReconstructor with
                 member __.ReconstructSecret (prime, coords) : bigint =
-                    getSecret prime coords }
+                    coords
+                    |> List.ofSeq
+                    |> getSecret prime }

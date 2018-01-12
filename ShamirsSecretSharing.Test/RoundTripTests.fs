@@ -2,9 +2,16 @@
 
 open NUnit.Framework
 open SecretSharing
+open Function
 
 [<TestFixture>]
 module RoundTripTests =
+
+    let take (amount : int) (a : System.Collections.Generic.List<'a>) =
+        a
+        |> List.ofSeq
+        |> List.take amount
+        |> toGenericList
 
     [<Test>]
     [<Repeat(2000)>]
@@ -13,7 +20,7 @@ module RoundTripTests =
         let mySecret = RandomGenerator.generate gen
         let generator = SecretSharer.make()
         let p, shares = generator.GenerateCoordinates (3u, 6u, mySecret)
-        let shares = shares |> List.take 3
+        let shares = shares |> take 3
         let recon = SecretReconstructor.make ()
         let secret = recon.ReconstructSecret (p,shares)
         Assert.That (secret, Is.EqualTo(mySecret))
@@ -25,7 +32,7 @@ module RoundTripTests =
         let mySecret = RandomGenerator.generate gen
         let generator = SecretSharer.make()
         let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let shares = shares |> List.take 2
+        let shares = shares |> take 2
         let recon = SecretReconstructor.make ()
         let secret = recon.ReconstructSecret (p,shares)
         Assert.That (secret, Is.Not.EqualTo(mySecret))
@@ -37,7 +44,7 @@ module RoundTripTests =
         let mySecret = RandomGenerator.generate gen
         let generator = SecretSharer.make()
         let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let share = shares |> List.take 1
+        let share = shares |> take 1
         let recon = SecretReconstructor.make ()
         let secret = recon.ReconstructSecret (p,share)
         Assert.That (secret, Is.Not.EqualTo(mySecret))
