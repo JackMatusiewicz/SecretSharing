@@ -40,6 +40,7 @@ module SecretSharer =
         |> createCoordinates (int numberOfCoords) generator
         |> Tuple.make poly.Prime
 
+    [<CompiledName("Make")>]
     let make () =
         { new ISecretSharer with
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =

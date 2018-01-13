@@ -23,6 +23,7 @@ module CustomSharer =
         |> SecretSharer.generateCoordinates minimumSegmentsToSolve numberOfCoords
         |> Tuple.map (List.map fromCoord)
 
+    [<CompiledName("Make")>]
     let make (toBigInt : Func<'a, bigint>, fromCoord : Func<Coordinate, 'b>) =
         { new ICustomSharer<_,_> with
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =

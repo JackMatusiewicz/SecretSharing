@@ -38,6 +38,7 @@ module SecretReconstructor =
         let f = reconstructPolynomial prime shares
         f (bigint 0)
 
+    [<CompiledName("Make")>]
     let make () =
         { new ISecretReconstructor with
                 member __.ReconstructSecret (prime, coords) : bigint =

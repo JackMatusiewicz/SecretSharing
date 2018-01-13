@@ -21,6 +21,7 @@ module CustomReconstructor =
         |> SecretReconstructor.getSecret prime
         |> fromBigInt
 
+    [<CompiledName("Make")>]
     let make (fromBigInt : Func<bigint, 'a>, toCoord : Func<'b, Coordinate>) =
         { new ICustomReconstructor<_, _> with
                 member __.ReconstructSecret (prime, coords) : 'a =
