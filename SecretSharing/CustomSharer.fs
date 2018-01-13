@@ -6,7 +6,7 @@ open System.Numerics
 open Function
 
 type ICustomSharer<'a,'b> =
-    abstract member GenerateCoordinates : uint32 * uint32 * 'a -> Prime * List<'b>
+    abstract member GenerateCoordinates : uint32 * uint32 * 'a -> Shares<'b>
 
 //Wraps the SecretSharer so you can deal with anything, rather than with bigints.
 module CustomSharer =
@@ -30,4 +30,5 @@ module CustomSharer =
                     let g = Function.fromFunc fromCoord
 
                     generateCoordinates f g minimumSegmentsToSolve numberOfCoords secret
-                    |> Tuple.map toGenericList }
+                    |> Tuple.map toGenericList
+                    |> Shares.make }

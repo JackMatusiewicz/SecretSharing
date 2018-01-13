@@ -19,10 +19,10 @@ module RoundTripTests =
         let gen = RandomGenerator.makeRandomBigintGenerator 40
         let mySecret = RandomGenerator.generate gen
         let generator = SecretSharer.make()
-        let p, shares = generator.GenerateCoordinates (3u, 6u, mySecret)
-        let shares = shares |> take 3
+        let ret = generator.GenerateCoordinates (3u, 6u, mySecret)
+        let shares = ret.Shares |> take 3
         let recon = SecretReconstructor.make ()
-        let secret = recon.ReconstructSecret (p,shares)
+        let secret = recon.ReconstructSecret (ret.Prime,shares)
         Assert.That (secret, Is.EqualTo(mySecret))
     
     [<Test>]
@@ -31,10 +31,10 @@ module RoundTripTests =
         let gen = RandomGenerator.makeRandomBigintGenerator 4
         let mySecret = RandomGenerator.generate gen
         let generator = SecretSharer.make()
-        let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let shares = shares |> take 2
+        let ret = generator.GenerateCoordinates (5u, 6u, mySecret)
+        let shares = ret.Shares |> take 2
         let recon = SecretReconstructor.make ()
-        let secret = recon.ReconstructSecret (p,shares)
+        let secret = recon.ReconstructSecret (ret.Prime,shares)
         Assert.That (secret, Is.Not.EqualTo(mySecret))
 
     [<Test>]
@@ -43,8 +43,8 @@ module RoundTripTests =
         let gen = RandomGenerator.makeRandomBigintGenerator 4
         let mySecret = RandomGenerator.generate gen
         let generator = SecretSharer.make()
-        let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let share = shares |> take 1
+        let ret = generator.GenerateCoordinates (5u, 6u, mySecret)
+        let share = ret.Shares |> take 1
         let recon = SecretReconstructor.make ()
-        let secret = recon.ReconstructSecret (p,share)
+        let secret = recon.ReconstructSecret (ret.Prime,share)
         Assert.That (secret, Is.Not.EqualTo(mySecret))

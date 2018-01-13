@@ -52,10 +52,10 @@ module CustomRoundTripTests =
     let ``Given a password and a required number of shares, when those shares are present then secret is returned`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
-        let p, shares = generator.GenerateCoordinates (3u, 6u, mySecret)
-        let shares = shares |> take 3
+        let ret = generator.GenerateCoordinates (3u, 6u, mySecret)
+        let shares = ret.Shares |> take 3
         let recon = createReconstructor ()
-        let secret = recon.ReconstructSecret (p,shares)
+        let secret = recon.ReconstructSecret (ret.Prime,shares)
         Assert.That (secret, Is.EqualTo(mySecret))
 
     [<Test>]
@@ -63,10 +63,10 @@ module CustomRoundTripTests =
     let ``Given a secret and a required number of shares, when not enough shares are present then error is thrown`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
-        let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let shares = shares |> take 2
+        let ret = generator.GenerateCoordinates (5u, 6u, mySecret)
+        let shares = ret.Shares |> take 2
         let recon = createReconstructor ()
-        let secret = recon.ReconstructSecret (p,shares)
+        let secret = recon.ReconstructSecret (ret.Prime,shares)
         Assert.That (secret, Is.Not.EqualTo(mySecret))
 
     [<Test>]
@@ -74,8 +74,8 @@ module CustomRoundTripTests =
     let ``Given a secret and a required number of shares, when not enough shares are present then secret is not returned`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
-        let p, shares = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let share = shares |> take 1
+        let ret = generator.GenerateCoordinates (5u, 6u, mySecret)
+        let share = ret.Shares |> take 1
         let recon = createReconstructor ()
-        let secret = recon.ReconstructSecret (p,share)
+        let secret = recon.ReconstructSecret (ret.Prime,share)
         Assert.That (secret, Is.Not.EqualTo(mySecret))

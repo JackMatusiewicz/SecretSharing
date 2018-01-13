@@ -8,7 +8,7 @@ open Math
 open Function
 
 type ISecretSharer =
-    abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Prime * List<Coordinate>
+    abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Shares<Coordinate>
 
 module SecretSharer =
 
@@ -44,4 +44,5 @@ module SecretSharer =
         { new ISecretSharer with
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
                     generateCoordinates minimumSegmentsToSolve numberOfCoords secret
-                    |> Tuple.map toGenericList }
+                    |> Tuple.map toGenericList
+                    |> Shares.make }
