@@ -15,10 +15,11 @@ module SecretReconstructor =
     let private computeBasisPolynomial
         (prime : bigint)
         (vals : Coordinate list)
-        ((xj,_) : Coordinate) : bigint -> FiniteFieldElement =
+        (c : Coordinate) : bigint -> FiniteFieldElement =
 
+        let xj = c.X
         vals
-        |> List.map fst
+        |> List.map (fun c -> c.X)
         |> List.filter (fun x -> x <> xj)
         |> List.map (fun xm -> fun x -> BigRational.fromFraction (x - xm) (xj - xm))
         |> List.map (Reader.map (FiniteFieldElement.fromRational prime))
@@ -28,7 +29,7 @@ module SecretReconstructor =
         vals
         |> List.map (computeBasisPolynomial prime vals)
         |> List.zip vals
-        |> List.map (fun ((_,y), f) -> fun x -> (f x) * y)
+        |> List.map (fun (c, f) -> fun x -> (f x) * c.Y)
         |> List.map (Reader.map FiniteFieldElement.toBigInt)
         |> List.fold (fun f g -> f <?> (+) <*> g) (fun _ -> (bigint 0))
         |> (Reader.map (fun x -> x %% prime))

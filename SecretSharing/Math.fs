@@ -2,7 +2,7 @@ namespace SecretSharing
 
 open System.Numerics
 
-type Coordinate = bigint * bigint
+type Coordinate = {X : bigint; Y : bigint}
 type Prime = bigint
 
 module Math =

@@ -24,7 +24,7 @@ module SecretSharer =
             | _ ->
                 let x = RandomGenerator.generate rg
                 let y = Polynomial.evaluate x polynomial
-                create (remaining - 1) ((x,y) :: acc)
+                create (remaining - 1) ({X=x; Y=y} :: acc)
         create numberOfCoordinates []
 
     let generateCoordinates
