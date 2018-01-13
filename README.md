@@ -12,7 +12,7 @@ Use with BigIntegers
 
 In C#, to create a new set of shares you call:
 ```csharp
-var sharer = SecretSharer.make();
+var sharer = SecretSharer.Make();
 var primeAndShares = sharer.GenerateCoordinates(3, 6, new BigInteger(2858295));
 ```
 
@@ -20,7 +20,7 @@ SecretSharing uses finite field arithmetic, so the prime is required for reconst
 
 In order to reconstruct the secret, do the following:
 ```csharp
-var reconstructor = SecretReconstructor.make();
+var reconstructor = SecretReconstructor.Make();
 var number = reconstructor.ReconstructSecret(primeAndShares.Prime, usableShares);
 ```
 Where prime is the same prime number that wass generated above.
@@ -51,9 +51,9 @@ Func<BigInteger, string> toString = bi =>
     return new string(chars);
 };
 
-var sharer = CustomSharer.make(toBigInt, c => c);
+var sharer = CustomSharer.Make(toBigInt, c => c);
 var primeAndShares = sharer.GenerateCoordinates(3, 6, "Hello123pass!@!_:");
 
-var reconstructor = CustomReconstructor.make<string, Coordinate>(toString, c => c);
+var reconstructor = CustomReconstructor.Make<string, Coordinate>(toString, c => c);
 var password = reconstructor.ReconstructSecret(primeAndShares.Prime, primeAndShares.Shares);
 ```
