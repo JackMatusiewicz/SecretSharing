@@ -3,7 +3,6 @@ namespace SecretSharing.Test
 open NUnit.Framework
 open SecretSharing
 open System.Numerics
-open Math
 
 [<TestFixture>]
 module BigIntTests =

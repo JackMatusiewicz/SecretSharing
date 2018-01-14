@@ -19,3 +19,8 @@ module Permutations =
             | [] -> acc
 
         create [[]] data
+
+    let ofLength (len : int) (data : 'a list) =
+        make data
+        |> List.map (List.take len)
+        |> List.distinct

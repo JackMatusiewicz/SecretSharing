@@ -48,12 +48,12 @@ module CustomRoundTripTests =
         |> toGenericList
 
     [<Test>]
-    [<Repeat(5)>]
+    [<Repeat(50)>]
     let ``Given a password and a required number of shares, when those shares are present then secret is returned`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
         let ret = generator.GenerateCoordinates (3u, 6u, mySecret)
-        let allSharePermutations = Permutations.make (List.ofSeq ret.Shares) |> List.map (List.take 3)
+        let allSharePermutations = Permutations.ofLength 3 (List.ofSeq ret.Shares)
         let shares = List.map (Function.toGenericList) allSharePermutations
         let recon = createReconstructor ()
         for share in shares do
@@ -61,12 +61,12 @@ module CustomRoundTripTests =
             Assert.That (secret, Is.EqualTo(mySecret))
 
     [<Test>]
-    [<Repeat(5)>]
+    [<Repeat(50)>]
     let ``Given a secret and a required number of shares, when not enough shares are present then error is thrown`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
         let ret = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let allSharePermutations = Permutations.make (List.ofSeq ret.Shares) |> List.map (List.take 2)
+        let allSharePermutations = Permutations.ofLength 2 (List.ofSeq ret.Shares)
         let shares = List.map (Function.toGenericList) allSharePermutations
         let recon = createReconstructor ()
         for share in shares do
@@ -74,12 +74,12 @@ module CustomRoundTripTests =
             Assert.That (secret, Is.Not.EqualTo(mySecret))
 
     [<Test>]
-    [<Repeat(5)>]
+    [<Repeat(50)>]
     let ``Given a secret and a required number of shares, when not enough shares are present then secret is not returned`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
         let ret = generator.GenerateCoordinates (5u, 6u, mySecret)
-        let allSharePermutations = Permutations.make (List.ofSeq ret.Shares) |> List.map (List.take 3)
+        let allSharePermutations = Permutations.ofLength 1 (List.ofSeq ret.Shares)
         let shares = List.map (Function.toGenericList) allSharePermutations
         let recon = createReconstructor ()
         for share in shares do

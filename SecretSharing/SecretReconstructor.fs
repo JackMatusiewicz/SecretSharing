@@ -1,9 +1,7 @@
 namespace SecretSharing
 
 open Reader
-open System
 open System.Collections.Generic
-open System.Linq
 open System.Numerics
 open Math
 

@@ -1,10 +1,5 @@
 ﻿namespace SecretSharing
 
-open Reader
-open System
-open System.Collections.Generic
-open System.Numerics
-open Math
 open Function
 
 type ISecretSharer =

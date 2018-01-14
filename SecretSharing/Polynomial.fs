@@ -1,6 +1,5 @@
 ﻿namespace SecretSharing
- 
-open System
+
 open System.Numerics
 
 type PolynomialTerm = {

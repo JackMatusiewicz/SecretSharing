@@ -2,8 +2,6 @@
 
 open System
 open System.Collections.Generic
-open System.Linq
-open System.Numerics
 
 type ICustomReconstructor<'a, 'b> =
     abstract member ReconstructSecret : Prime * List<'b> -> 'a
