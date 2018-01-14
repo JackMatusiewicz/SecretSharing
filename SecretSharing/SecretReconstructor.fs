@@ -11,7 +11,7 @@ type ISecretReconstructor =
 module SecretReconstructor =
 
     let private computeBasisPolynomial
-        (prime : bigint)
+        (prime : Prime)
         (vals : Coordinate list)
         (c : Coordinate) : bigint -> FiniteFieldElement =
 

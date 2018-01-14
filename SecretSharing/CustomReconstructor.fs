@@ -12,7 +12,7 @@ module CustomReconstructor =
     let getPassword
         (fromBigInt : bigint -> 'a)
         (toCoordinate : 'b -> Coordinate)
-        (prime : bigint) (encodedCoords : 'b list) : 'a =
+        (prime : Prime) (encodedCoords : 'b list) : 'a =
 
         encodedCoords
         |> List.map toCoordinate
