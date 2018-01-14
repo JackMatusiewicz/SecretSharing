@@ -30,7 +30,7 @@ module SecretSharer =
     let generateCoordinates
         (minimumSegmentsToSolve : uint32)
         (numberOfCoords : uint32)
-        (secret : bigint) =
+        (secret : bigint) : Prime * Coordinate list =
 
         let prime = BigInt.findLargerMersennePrime secret
         let generator = RandomGenerator.makeRandomBigIntRange prime
