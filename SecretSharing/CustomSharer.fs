@@ -3,31 +3,44 @@
 open System
 open Function
 
-type ICustomSharer<'a,'b> =
-    abstract member GenerateCoordinates : uint32 * uint32 * 'a -> Shares<'b>
+type ICustomSharer<'secret,'coord, 'prime> =
+    abstract member GenerateCoordinates : uint32 * uint32 * 'secret -> Shares<'coord, 'prime>
 
 //Wraps the SecretSharer so you can deal with anything, rather than with bigints.
 module CustomSharer =
 
     let generateCoordinates
-        (toBigInt : 'a -> bigint)
-        (fromCoord : Coordinate -> 'b)
+        (toBigInt : 'secret -> bigint)
+        (fromCoord : Coordinate -> 'coord)
+        (fromPrime : Prime -> 'prime)
         (minimumSegmentsToSolve : uint32)
         (numberOfCoords : uint32)
-        (secret : 'a) : Prime * 'b list =
+        (secret : 'secret) : 'prime * 'coord list =
 
         secret
         |> toBigInt
         |> SecretSharer.generateCoordinates minimumSegmentsToSolve numberOfCoords
         |> Tuple.map (List.map fromCoord)
+        |> Tuple.leftMap fromPrime
 
     [<CompiledName("Make")>]
-    let make (toBigInt : Func<'a, bigint>, fromCoord : Func<Coordinate, 'b>) =
-        { new ICustomSharer<_,_> with
-                member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
-                    let f = Function.fromFunc toBigInt
-                    let g = Function.fromFunc fromCoord
+    let make
+        (toBigInt : Func<'secret, bigint>,
+         fromCoord : Func<Coordinate, 'coord>,
+         fromPrime : Func<Prime, 'prime>) =
 
-                    generateCoordinates f g minimumSegmentsToSolve numberOfCoords secret
+        { new ICustomSharer<_,_,_> with
+                member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
+                    let toBigInt = Function.fromFunc toBigInt
+                    let fromCoord = Function.fromFunc fromCoord
+                    let fromPrime = Function.fromFunc fromPrime
+
+                    generateCoordinates
+                        toBigInt
+                        fromCoord
+                        fromPrime
+                        minimumSegmentsToSolve
+                        numberOfCoords
+                        secret
                     |> Tuple.map toGenericList
                     |> Shares.make }

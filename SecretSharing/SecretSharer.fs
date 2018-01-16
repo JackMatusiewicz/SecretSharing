@@ -3,7 +3,7 @@
 open Function
 
 type ISecretSharer =
-    abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Shares<Coordinate>
+    abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Shares<Coordinate, Prime>
 
 module SecretSharer =
 

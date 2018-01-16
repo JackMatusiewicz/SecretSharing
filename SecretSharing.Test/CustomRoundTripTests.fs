@@ -22,13 +22,13 @@ module CustomRoundTripTests =
             (StringBuilder())
         |> (fun sb -> sb.ToString())
 
-    let id = (Func<Coordinate, Coordinate> (fun a -> a))
+    let id = (Func<'a, 'a> (fun a -> a))
 
     let createSharer () =
-        CustomSharer.make ((Func<string, bigint> toBigInt), id)
+        CustomSharer.make ((Func<string, bigint> toBigInt), id, id)
 
     let createReconstructor () =
-        CustomReconstructor.make ((Func<bigint, string> toString), id)
+        CustomReconstructor.make ((Func<bigint, string> toString), id, id)
 
     let generateRandomPassword (len : int) =
         let rec make (len : int) (acc : StringBuilder) (rg : RandomGenerator<int>) =
