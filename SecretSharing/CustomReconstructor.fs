@@ -20,7 +20,7 @@ module CustomReconstructor =
         |> fromBigInt
 
     [<CompiledName("Make")>]
-    let make (fromBigInt : Func<bigint, 'a>, toCoord : Func<'b, Coordinate>, toPrime : Func<'prime, bigint>) =
+    let make (fromBigInt : Func<bigint, 'a>, toCoord : Func<'b, Coordinate>, toPrime : Func<'prime, Prime>) =
         { new ICustomReconstructor<_, _, _> with
                 member __.ReconstructSecret (prime, coords) : 'a =
                     let f = Function.fromFunc fromBigInt
