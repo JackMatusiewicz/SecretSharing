@@ -12,14 +12,16 @@ module CustomSharer =
     let generateCoordinates
         (toBigInt : 'a -> bigint)
         (fromCoord : Coordinate -> 'b)
+        (fromPrime : Prime -> 'prime)
         (minimumSegmentsToSolve : uint32)
         (numberOfCoords : uint32)
-        (secret : 'a) : Prime * 'b list =
+        (secret : 'a) : 'prime * 'b list =
 
         secret
         |> toBigInt
         |> SecretSharer.generateCoordinates minimumSegmentsToSolve numberOfCoords
         |> Tuple.map (List.map fromCoord)
+        |> Tuple.leftMap fromPrime
 
     [<CompiledName("Make")>]
     let make (toBigInt : Func<'a, bigint>, fromCoord : Func<Coordinate, 'b>, fromPrime : Func<Prime, 'prime>) =
@@ -29,7 +31,6 @@ module CustomSharer =
                     let g = Function.fromFunc fromCoord
                     let fromPrime = Function.fromFunc fromPrime
 
-                    generateCoordinates f g minimumSegmentsToSolve numberOfCoords secret
+                    generateCoordinates f g fromPrime minimumSegmentsToSolve numberOfCoords secret
                     |> Tuple.map toGenericList
-                    |> Tuple.leftMap fromPrime
                     |> Shares.make }

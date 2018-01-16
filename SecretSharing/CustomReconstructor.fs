@@ -12,11 +12,12 @@ module CustomReconstructor =
     let getPassword
         (fromBigInt : bigint -> 'a)
         (toCoordinate : 'b -> Coordinate)
-        (prime : Prime) (encodedCoords : 'b list) : 'a =
+        (toPrime : 'prime -> Prime)
+        (prime : 'prime) (encodedCoords : 'b list) : 'a =
 
         encodedCoords
         |> List.map toCoordinate
-        |> SecretReconstructor.getSecret prime
+        |> SecretReconstructor.getSecret (toPrime prime)
         |> fromBigInt
 
     [<CompiledName("Make")>]
@@ -25,8 +26,8 @@ module CustomReconstructor =
                 member __.ReconstructSecret (prime, coords) : 'a =
                     let f = Function.fromFunc fromBigInt
                     let g = Function.fromFunc toCoord
-                    let fromPrime = Function.fromFunc toPrime
+                    let toPrime = Function.fromFunc toPrime
 
                     coords
                     |> List.ofSeq
-                    |> getPassword f g (toPrime prime) }
+                    |> getPassword f g toPrime prime }
