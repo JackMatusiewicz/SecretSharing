@@ -7,3 +7,9 @@ module Tuple =
 
     let make (a : 'a) (b : 'b) : 'a * 'b =
         a,b
+
+    let bimap (f : 'a -> 'b) (g : 'c -> 'd) (a,c) =
+        (f a), (g c)
+
+    let leftMap (f : 'a -> 'b) t =
+        bimap f (fun x -> x) t
