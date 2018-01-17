@@ -19,6 +19,7 @@ module Permutations =
             | [] -> acc
 
         create [[]] data
+        |> List.distinct
 
     let ofLength (len : int) (data : 'a list) =
         make data
