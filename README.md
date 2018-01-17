@@ -51,9 +51,9 @@ Func<BigInteger, string> toString = bi =>
     return new string(chars);
 };
 
-var sharer = CustomSharer.Make(toBigInt, c => c);
+var sharer = CustomSharer.Make(toBigInt, coord => coord, prime => prime);
 var primeAndShares = sharer.GenerateCoordinates(3, 6, "Hello123pass!@!_:");
 
-var reconstructor = CustomReconstructor.Make<string, Coordinate>(toString, c => c);
+var reconstructor = CustomReconstructor.Make<string, Coordinate>(toString, coord => coord, prime => prime);
 var password = reconstructor.ReconstructSecret(primeAndShares.Prime, primeAndShares.Shares);
 ```
