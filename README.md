@@ -2,6 +2,7 @@
 
 | Build | Status |
 | --- | --- |
+| Linux | [![Build Status](https://travis-ci.org/JackMatusiewicz/SecretSharing.svg?branch=master)](https://travis-ci.org/JackMatusiewicz/SecretSharing) |
 | Windows | [![Build status](https://ci.appveyor.com/api/projects/status/uow4jkvbkm9s6rk3?svg=true)](https://ci.appveyor.com/project/JackMatusiewicz/SecretSharing) |
 | Coverage | [![Coverage Status](https://coveralls.io/repos/github/JackMatusiewicz/SecretSharing/badge.svg?branch=master)](https://coveralls.io/github/JackMatusiewicz/SecretSharing?branch=master) |
 
