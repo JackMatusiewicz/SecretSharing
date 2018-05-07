@@ -40,7 +40,7 @@ module Polynomial =
     ///Evaluates a polynomial at a particular x-value.
     let evaluate (x : bigint) (polynomial : Polynomial) : bigint =
         polynomial.Terms
-        |> List.map (fun term -> BigInteger.Pow(x, term.Power) * term.Coefficient)
+        |> List.map (fun term -> BigInteger.Pow (x, term.Power) * term.Coefficient)
         |> List.map (FiniteFieldElement.fromBigInt (polynomial.Prime))
         |> List.fold (+) (FiniteFieldElement.fromBigInt (polynomial.Prime) (bigint 0))
         |> (FiniteFieldElement.toBigInt)

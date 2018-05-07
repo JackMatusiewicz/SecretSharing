@@ -51,7 +51,7 @@ module BigInt =
         mersennePrimesExponents
         |> List.filter (fun x -> x > bitPosition)
         |> List.tryHead
-        |> Option.map (fun pow -> BigInteger.Pow((bigint 2), pow) - (bigint 1))
+        |> Option.map (fun pow -> BigInteger.Pow ((bigint 2), pow) - (bigint 1))
 
     let findLargerMersennePrime (value : bigint) =
         match tryFindLargerMersennePrime value with

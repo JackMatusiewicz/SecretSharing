@@ -13,8 +13,8 @@ module CustomReconstructor =
         (fromBigInt : bigint -> 'secret)
         (toCoordinate : 'coord -> Coordinate)
         (toPrime : 'prime -> Prime)
-        (prime : 'prime) (encodedCoords : 'coord list) : 'secret =
-
+        (prime : 'prime) (encodedCoords : 'coord list) : 'secret
+        =
         encodedCoords
         |> List.map toCoordinate
         |> SecretReconstructor.getSecret (toPrime prime)
@@ -24,8 +24,8 @@ module CustomReconstructor =
     let make
         (fromBigInt : Func<bigint, 'a>,
          toCoord : Func<'b, Coordinate>,
-         toPrime : Func<'prime, Prime>) =
-
+         toPrime : Func<'prime, Prime>)
+        =
         { new ICustomReconstructor<_, _, _> with
                 member __.ReconstructSecret (prime, coords) : 'a =
                     let fromBigInt = Function.fromFunc fromBigInt

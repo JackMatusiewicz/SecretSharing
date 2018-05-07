@@ -21,7 +21,7 @@ module RandomGenerator =
             fun () ->
                 let store = Array.create 4 (byte 0)
                 r.GetBytes(store)
-                let value = BitConverter.ToInt32(store,0)
+                let value = BitConverter.ToInt32 (store,0)
                 (value &&& (0x7FFFFFFF))
         Generator f
 

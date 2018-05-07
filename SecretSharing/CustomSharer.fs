@@ -15,8 +15,8 @@ module CustomSharer =
         (fromPrime : Prime -> 'prime)
         (minimumSegmentsToSolve : uint32)
         (numberOfCoords : uint32)
-        (secret : 'secret) : 'prime * 'coord list =
-
+        (secret : 'secret) : 'prime * 'coord list
+        =
         secret
         |> toBigInt
         |> SecretSharer.generateCoordinates minimumSegmentsToSolve numberOfCoords
@@ -27,8 +27,8 @@ module CustomSharer =
     let make
         (toBigInt : Func<'secret, bigint>,
          fromCoord : Func<Coordinate, 'coord>,
-         fromPrime : Func<Prime, 'prime>) =
-
+         fromPrime : Func<Prime, 'prime>)
+         =
         { new ICustomSharer<_,_,_> with
                 member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
                     let toBigInt = Function.fromFunc toBigInt
