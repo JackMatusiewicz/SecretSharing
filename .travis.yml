@@ -1,0 +1,8 @@
+language: csharp
+solution: SecretSharing.sln
+install:
+  - nuget restore MyPass.sln
+  - nuget install NUnit.Runners -Version 3.6.0 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release MyPass.sln
+  - mono ./testrunner/NUnit.ConsoleRunner.3.6.0/tools/nunit3-console.exe ./SecretSharing.Test/bin/Release/SecretSharing.Test.dll
