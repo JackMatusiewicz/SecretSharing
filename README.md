@@ -1,7 +1,9 @@
 # SecretSharing
 
-[![Build status](https://ci.appveyor.com/api/projects/status/uow4jkvbkm9s6rk3?svg=true)](https://ci.appveyor.com/project/JackMatusiewicz/SecretSharing)
-[![Coverage Status](https://coveralls.io/repos/github/JackMatusiewicz/SecretSharing/badge.svg?branch=master)](https://coveralls.io/github/JackMatusiewicz/SecretSharing?branch=master)
+| Build | Status |
+| --- | --- |
+| Windows | [![Build status](https://ci.appveyor.com/api/projects/status/uow4jkvbkm9s6rk3?svg=true)](https://ci.appveyor.com/project/JackMatusiewicz/SecretSharing) |
+| Coverage | [![Coverage Status](https://coveralls.io/repos/github/JackMatusiewicz/SecretSharing/badge.svg?branch=master)](https://coveralls.io/github/JackMatusiewicz/SecretSharing?branch=master) |
 
 About
 -----
