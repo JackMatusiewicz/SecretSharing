@@ -19,7 +19,7 @@ module SecretReconstructor =
         vals
         |> List.map (fun c -> c.X)
         |> List.filter (fun x -> x <> xj)
-        |> List.map (fun xm -> fun x -> BigRational.fromFraction (x - xm) (xj - xm))
+        |> List.map (fun xm x -> BigRational.fromFraction (x - xm) (xj - xm))
         |> List.map (Reader.map (FiniteFieldElement.fromRational prime))
         |> List.fold (fun f g -> f <?> (*) <*> g) (fun _ -> FiniteFieldElement.fromBigInt prime (bigint 1))
 
