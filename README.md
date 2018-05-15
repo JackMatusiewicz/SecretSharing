@@ -64,3 +64,37 @@ var primeAndShares = sharer.GenerateCoordinates(3, 6, "Hello123pass!@!_:");
 var reconstructor = CustomReconstructor.Make<string, Coordinate, Prime>(toString, coord => coord, prime => prime);
 var password = reconstructor.ReconstructSecret(primeAndShares.Prime, primeAndShares.Shares);
 ```
+
+F# Example
+-----
+
+Using F#, you can just access the functions directly:
+
+```fsharp
+let toBigInt (s : string) =
+        s.ToCharArray ()
+        |> Array.map byte
+        |> bigint
+
+let toString (bi : bigint) =
+    bi.ToByteArray ()
+    |> Array.map char
+    |> fun c -> new string (c)
+
+let (prime, coords) = 
+    CustomSharer.generateCoordinates
+        toBigInt
+        id
+        id
+        4u
+        6u
+        "helloWorld"
+
+let secret =
+    CustomReconstructor.reconstructSecret
+        toString
+        id
+        id
+        prime
+        coords
+```
