@@ -1,17 +1,18 @@
 ﻿namespace SecretSharing
 
 open Function
+open System
 
 type ISecretSharer =
-    abstract member GenerateCoordinates : uint32 * uint32 * bigint -> Shares<Coordinate, Prime>
+    abstract member GenerateCoordinates : ThresholdScheme * bigint -> Shares<Coordinate, Prime>
 
 module SecretSharer =
 
     let private createCoordinates
         (numberOfCoordinates : int)
         (rg : RandomGenerator<bigint>)
-        (polynomial : Polynomial) =
-
+        (polynomial : Polynomial)
+        =
         let rec create (remaining : int) (acc : Coordinate list) =
             match remaining with
             | _ when remaining <= 0 ->
@@ -23,22 +24,23 @@ module SecretSharer =
         create numberOfCoordinates []
 
     let generateCoordinates
-        (minimumSegmentsToSolve : uint32)
-        (numberOfCoords : uint32)
-        (secret : bigint) : Prime * Coordinate list =
-
+        (ts : ThresholdScheme)
+        (secret : bigint)
+        : Prime * Coordinate list
+        =
         let prime = BigInt.findLargerMersennePrime secret
         let generator = RandomGenerator.makeRandomBigIntRange prime
 
-        let poly = Polynomial.create minimumSegmentsToSolve generator secret prime
+        let poly = Polynomial.create ts.NumberOfSharesForRecovery generator secret prime
         poly
-        |> createCoordinates (int numberOfCoords) generator
+        |> createCoordinates (int ts.NumberOfSharesToMake) generator
         |> Tuple.make poly.Prime
 
     [<CompiledName("Make")>]
     let make () =
         { new ISecretSharer with
-                member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
-                    generateCoordinates minimumSegmentsToSolve numberOfCoords secret
+                member __.GenerateCoordinates (ts, secret) =
+                    generateCoordinates ts secret
                     |> Tuple.map toGenericList
-                    |> Shares.make }
+                    |> Shares.make
+        }

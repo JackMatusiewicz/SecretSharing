@@ -8,6 +8,7 @@ open Function
 
 [<TestFixture>]
 module CustomRoundTripTests =
+    open SecretSharing
 
     let toBigInt (password : string) =
         password.ToCharArray ()
@@ -52,7 +53,8 @@ module CustomRoundTripTests =
     let ``Given a password and a required number of shares, when those shares are present then secret is returned`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
-        let ret = generator.GenerateCoordinates (3u, 6u, mySecret)
+        let ts = ThresholdScheme.make (6u,3u)
+        let ret = generator.GenerateCoordinates (ts, mySecret)
         let allSharePermutations = Permutations.ofLength 3 (List.ofSeq ret.Shares)
         let shares = List.map (Function.toGenericList) allSharePermutations
         let recon = createReconstructor ()
@@ -65,7 +67,8 @@ module CustomRoundTripTests =
     let ``Given a secret and a required number of shares, when not enough shares are present then error is thrown`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
-        let ret = generator.GenerateCoordinates (5u, 6u, mySecret)
+        let ts = ThresholdScheme.make (6u,5u)
+        let ret = generator.GenerateCoordinates (ts, mySecret)
         let allSharePermutations = Permutations.ofLength 2 (List.ofSeq ret.Shares)
         let shares = List.map (Function.toGenericList) allSharePermutations
         let recon = createReconstructor ()
@@ -78,7 +81,8 @@ module CustomRoundTripTests =
     let ``Given a secret and a required number of shares, when not enough shares are present then secret is not returned`` () =
         let mySecret = generateRandomPassword 40
         let generator = createSharer ()
-        let ret = generator.GenerateCoordinates (5u, 6u, mySecret)
+        let ts = ThresholdScheme.make (6u,5u)
+        let ret = generator.GenerateCoordinates (ts, mySecret)
         let allSharePermutations = Permutations.ofLength 1 (List.ofSeq ret.Shares)
         let shares = List.map (Function.toGenericList) allSharePermutations
         let recon = createReconstructor ()

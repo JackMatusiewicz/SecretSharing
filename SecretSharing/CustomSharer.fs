@@ -4,7 +4,7 @@ open System
 open Function
 
 type ICustomSharer<'secret,'coord, 'prime> =
-    abstract member GenerateCoordinates : uint32 * uint32 * 'secret -> Shares<'coord, 'prime>
+    abstract member GenerateCoordinates : ThresholdScheme * 'secret -> Shares<'coord, 'prime>
 
 //Wraps the SecretSharer so you can deal with anything, rather than with bigints.
 module CustomSharer =
@@ -13,13 +13,12 @@ module CustomSharer =
         (toBigInt : 'secret -> bigint)
         (fromCoord : Coordinate -> 'coord)
         (fromPrime : Prime -> 'prime)
-        (minimumSegmentsToSolve : uint32)
-        (numberOfCoords : uint32)
+        (ts : ThresholdScheme)
         (secret : 'secret) : 'prime * 'coord list
         =
         secret
         |> toBigInt
-        |> SecretSharer.generateCoordinates minimumSegmentsToSolve numberOfCoords
+        |> SecretSharer.generateCoordinates ts
         |> Tuple.map (List.map fromCoord)
         |> Tuple.leftMap fromPrime
 
@@ -30,7 +29,7 @@ module CustomSharer =
          fromPrime : Func<Prime, 'prime>)
          =
         { new ICustomSharer<_,_,_> with
-                member __.GenerateCoordinates (minimumSegmentsToSolve, numberOfCoords, secret) =
+                member __.GenerateCoordinates (ts, secret) =
                     let toBigInt = Function.fromFunc toBigInt
                     let fromCoord = Function.fromFunc fromCoord
                     let fromPrime = Function.fromFunc fromPrime
@@ -39,8 +38,7 @@ module CustomSharer =
                         toBigInt
                         fromCoord
                         fromPrime
-                        minimumSegmentsToSolve
-                        numberOfCoords
+                        ts
                         secret
                     |> Tuple.map toGenericList
                     |> Shares.make }
