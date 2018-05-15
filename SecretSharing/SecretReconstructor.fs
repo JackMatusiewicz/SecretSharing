@@ -32,7 +32,7 @@ module SecretReconstructor =
         |> List.fold (fun f g -> f <?> (+) <*> g) (fun _ -> (bigint 0))
         |> (Reader.map (fun x -> x %% prime))
 
-    let getSecret (prime : bigint) (shares : Coordinate list) : bigint =
+    let reconstructSecret (prime : bigint) (shares : Coordinate list) : bigint =
         let f = reconstructPolynomial prime shares
         f (bigint 0)
 
@@ -42,4 +42,4 @@ module SecretReconstructor =
                 member __.ReconstructSecret (prime, coords) : bigint =
                     coords
                     |> List.ofSeq
-                    |> getSecret prime }
+                    |> reconstructSecret prime }
