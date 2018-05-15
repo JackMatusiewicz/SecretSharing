@@ -17,7 +17,7 @@ module CustomReconstructor =
         =
         encodedCoords
         |> List.map toCoordinate
-        |> SecretReconstructor.getSecret (toPrime prime)
+        |> SecretReconstructor.reconstructSecret (toPrime prime)
         |> fromBigInt
 
     [<CompiledName("Make")>]
