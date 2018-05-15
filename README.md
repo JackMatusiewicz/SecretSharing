@@ -10,6 +10,10 @@ About
 -----
 An F# implementation of Shamir's Secret Sharing with as few third party dependencies as possible.
 
+Download
+-----
+This project is available as a NuGet package here: https://www.nuget.org/packages/SecretSharing/
+
 Use with BigIntegers
 -----
 
