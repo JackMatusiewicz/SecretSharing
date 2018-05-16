@@ -7,12 +7,12 @@ open System.Runtime.InteropServices
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[<assembly: AssemblyTitle("ShamirsSecretSharing")>]
-[<assembly: AssemblyDescription("")>]
+[<assembly: AssemblyTitle("SecretSharing")>]
+[<assembly: AssemblyDescription("A .NET implementation of Shamir's Secret Sharing.")>]
 [<assembly: AssemblyConfiguration("")>]
-[<assembly: AssemblyCompany("")>]
-[<assembly: AssemblyProduct("ShamirsSecretSharing")>]
-[<assembly: AssemblyCopyright("Copyright ©  2017")>]
+[<assembly: AssemblyCompany("Jack Matusiewicz")>]
+[<assembly: AssemblyProduct("SecretSharing")>]
+[<assembly: AssemblyCopyright("Copyright ©  2018")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
 
