@@ -32,7 +32,7 @@ In order to reconstruct the secret, do the following:
 var reconstructor = SecretReconstructor.Make();
 var number = reconstructor.ReconstructSecret(primeAndShares.Prime, usableShares);
 ```
-Where prime is the same prime number that wass generated above.
+Where prime is the same prime number that was generated above.
 
 Both makeGenerator and makeReconstructor return an object implementing an interface for the task, so this is easy to use both from F# and from C#. If you're using F# you can choose to use the objects or the underlying functions directly.
 
