@@ -4,7 +4,7 @@ open System
 open Function
 
 type ICustomSharer<'secret,'coord, 'prime> =
-    abstract member GenerateCoordinates : ThresholdScheme * 'secret -> Shares<'coord, 'prime>
+    abstract member GenerateCoordinates : ThresholdSchemeData * 'secret -> Shares<'coord, 'prime>
 
 //Wraps the SecretSharer so you can deal with anything, rather than with bigints.
 module CustomSharer =
@@ -13,7 +13,7 @@ module CustomSharer =
         (toBigInt : 'secret -> bigint)
         (fromCoord : Coordinate -> 'coord)
         (fromPrime : Prime -> 'prime)
-        (ts : ThresholdScheme)
+        (ts : ThresholdSchemeData)
         (secret : 'secret) : 'prime * 'coord list
         =
         secret

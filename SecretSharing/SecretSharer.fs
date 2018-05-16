@@ -4,7 +4,7 @@ open Function
 open System
 
 type ISecretSharer =
-    abstract member GenerateCoordinates : ThresholdScheme * bigint -> Shares<Coordinate, Prime>
+    abstract member GenerateCoordinates : ThresholdSchemeData * bigint -> Shares<Coordinate, Prime>
 
 module SecretSharer =
 
@@ -24,7 +24,7 @@ module SecretSharer =
         create numberOfCoordinates []
 
     let generateCoordinates
-        (ts : ThresholdScheme)
+        (ts : ThresholdSchemeData)
         (secret : bigint)
         : Prime * Coordinate list
         =

@@ -1,6 +1,6 @@
 namespace SecretSharing
 
-type ThresholdScheme =
+type ThresholdSchemeData =
     private {
         NumberOfSharesToMake : uint32
         NumberOfSharesForRecovery : uint32
@@ -26,6 +26,6 @@ module ThresholdScheme =
         | Some s -> s
         | None -> raise InvalidThresholdScheme
 
-    let numberOfSharesToMake (ts : ThresholdScheme) = ts.NumberOfSharesToMake
+    let numberOfSharesToMake (ts : ThresholdSchemeData) = ts.NumberOfSharesToMake
 
-    let numberOfSharesForRecovery (ts : ThresholdScheme) = ts.NumberOfSharesForRecovery
+    let numberOfSharesForRecovery (ts : ThresholdSchemeData) = ts.NumberOfSharesForRecovery
