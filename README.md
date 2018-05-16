@@ -20,8 +20,9 @@ Use with BigIntegers
 
 In C#, to create a new set of shares you call:
 ```csharp
+var ts = ThresholdScheme.Make(6, 3);
 var sharer = SecretSharer.Make();
-var primeAndShares = sharer.GenerateCoordinates(3, 6, new BigInteger(2858295));
+var primeAndShares = sharer.GenerateCoordinates(ts, new BigInteger(2858295));
 ```
 
 SecretSharing uses finite field arithmetic, so the prime is required for reconstructing the secret. The coords are a list of (x,y) tuples. The parameters to the GenerateSecret method are: The minimum number of coordinates required to reconstruct the secret, the number of coordinates to generate, the secret to share.
@@ -59,10 +60,11 @@ Func<BigInteger, string> toString = bi =>
     return new string(chars);
 };
 
+var ts = ThresholdScheme.Make(6, 4);
 var sharer = CustomSharer.Make(toBigInt, coord => coord, prime => prime);
-var primeAndShares = sharer.GenerateCoordinates(3, 6, "Hello123pass!@!_:");
+var primeAndShares = sharer.GenerateCoordinates(ts, "Hello123pass!@!_:");
 
-var reconstructor = CustomReconstructor.Make<string, Coordinate, Prime>(toString, coord => coord, prime => prime);
+var reconstructor = CustomReconstructor.Make<string, Coordinate, BigInteger>(toString, coord => coord, prime => prime);
 var password = reconstructor.ReconstructSecret(primeAndShares.Prime, primeAndShares.Shares);
 ```
 
