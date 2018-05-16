@@ -69,26 +69,27 @@ var password = reconstructor.ReconstructSecret(primeAndShares.Prime, primeAndSha
 F# Example
 -----
 
-Using F#, you can just access the functions directly:
+Using F#, you can just access the functions directly. Also note that there is a tryMake function inside ThresholdScheme that will return an option type, rather than throwing an exception if you pass incorrect data.
 
 ```fsharp
 let toBigInt (s : string) =
-        s.ToCharArray ()
-        |> Array.map byte
-        |> bigint
+    s.ToCharArray ()
+    |> Array.map byte
+    |> bigint
 
 let toString (bi : bigint) =
     bi.ToByteArray ()
     |> Array.map char
     |> fun c -> new string (c)
 
+let ts = ThresholdScheme.make (6u, 4u)
+
 let (prime, coords) = 
     CustomSharer.generateCoordinates
         toBigInt
         id
         id
-        4u
-        6u
+        ts
         "helloWorld"
 
 let secret =
@@ -98,4 +99,5 @@ let secret =
         id
         prime
         coords
+printfn "%s" secret
 ```
