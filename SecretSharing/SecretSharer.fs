@@ -31,10 +31,9 @@ module SecretSharer =
         let prime = BigInt.findLargerMersennePrime secret
         let generator = RandomGenerator.makeRandomBigIntRange prime
 
-        let poly = Polynomial.create ts.NumberOfSharesForRecovery generator secret prime
-        poly
-        |> createCoordinates (int ts.NumberOfSharesToMake) generator
-        |> Tuple.make poly.Prime
+        Polynomial.create ts.NumberOfSharesForRecovery generator secret prime
+        |> fun polynomial -> (polynomial.Prime, polynomial)
+        |> Tuple.map (createCoordinates (int ts.NumberOfSharesToMake) generator)
 
     [<CompiledName("Make")>]
     let make () =
