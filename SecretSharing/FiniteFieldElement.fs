@@ -21,10 +21,10 @@ type FiniteFieldElement = {
     static member (*) (lhs : FiniteFieldElement, rhs : bigint) =
         {lhs with Element = (lhs.Element * rhs) % lhs.Modulus}
 
-    member __.ToBigInt() =
-        let numerator = __.Element.Numerator
-        let denominator = __.Element.Denominator
-        let modulus = __.Modulus
+    member this.ToBigInt() =
+        let numerator = this.Element.Numerator
+        let denominator = this.Element.Denominator
+        let modulus = this.Modulus
 
         let modInvDen = Math.modularInverse denominator modulus
         match modInvDen with
