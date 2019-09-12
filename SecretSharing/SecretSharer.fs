@@ -11,6 +11,7 @@ module SecretSharer =
     let private createCoordinates
         (numberOfCoordinates : int)
         (rg : RandomGenerator<bigint>)
+        (prime : Prime)
         (polynomial : Polynomial)
         =
         let rec create (remaining : int) (acc : Coordinate list) =
@@ -18,7 +19,7 @@ module SecretSharer =
             | _ when remaining <= 0 ->
                 acc
             | _ ->
-                let x = RandomGenerator.generate rg
+                let x = RandomGenerator.generate rg % prime
                 let y = Polynomial.evaluate x polynomial
                 create (remaining - 1) ({X=x; Y=y} :: acc)
         create numberOfCoordinates []
@@ -33,7 +34,7 @@ module SecretSharer =
 
         Polynomial.create ts.NumberOfSharesForRecovery generator secret prime
         |> fun polynomial -> (polynomial.Prime, polynomial)
-        |> Tuple.map (createCoordinates (int ts.NumberOfSharesToMake) generator)
+        |> Tuple.map (createCoordinates (int ts.NumberOfSharesToMake) generator prime)
 
     [<CompiledName("Make")>]
     let make () =

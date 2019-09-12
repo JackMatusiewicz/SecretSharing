@@ -8,7 +8,6 @@ open Function
 
 [<TestFixture>]
 module CustomRoundTripTests =
-    open SecretSharing
 
     let toBigInt (password : string) =
         password.ToCharArray ()
