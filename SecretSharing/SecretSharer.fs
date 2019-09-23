@@ -1,7 +1,7 @@
 ﻿namespace SecretSharing
 
 open Function
-open System
+open System.Collections.Generic
 
 type ISecretSharer =
     abstract member GenerateCoordinates : ThresholdSchemeData * bigint -> Shares<Coordinate, Prime>
@@ -14,15 +14,19 @@ module SecretSharer =
         (prime : Prime)
         (polynomial : Polynomial)
         =
-        let rec create (remaining : int) (acc : Coordinate list) =
+        let rec create (remaining : int) (acc : Coordinate list) (xsVisited : bigint HashSet) =
             match remaining with
             | _ when remaining <= 0 ->
                 acc
             | _ ->
                 let x = RandomGenerator.generate rg % prime
-                let y = Polynomial.evaluate x polynomial
-                create (remaining - 1) ({X=x; Y=y} :: acc)
-        create numberOfCoordinates []
+                if xsVisited.Contains x then
+                    create remaining acc xsVisited
+                else
+                    xsVisited.Add x |> ignore
+                    let y = Polynomial.evaluate x polynomial
+                    create (remaining - 1) ({X=x; Y=y} :: acc) xsVisited
+        create numberOfCoordinates [] (HashSet<_> ())
 
     let generateCoordinates
         (ts : ThresholdSchemeData)

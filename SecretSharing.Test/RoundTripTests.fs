@@ -67,3 +67,18 @@ module RoundTripTests =
         let reconstructor = SecretReconstructor.make ()
         let result = reconstructor.ReconstructSecret (prime, Function.toGenericList [c1;c2])
         Assert.That(result, Is.EqualTo(secret))
+
+    [<Test>]
+    [<Repeat(50)>]
+    let ``Generated coordinates are unique`` () =
+        let gen = RandomGenerator.makeRandomBigintGenerator 40
+        let mySecret = RandomGenerator.generate gen
+        let generator = SecretSharer.make()
+        let ts = ThresholdScheme.make (6u,3u)
+        let ret = generator.GenerateCoordinates (ts, mySecret)
+        let xCoords =
+            ret.Shares
+            |> Seq.map (fun c -> c.X)
+            |> Seq.groupBy id
+        for (_,vs) in xCoords do
+            Assert.That (Seq.length vs, Is.EqualTo 1)
